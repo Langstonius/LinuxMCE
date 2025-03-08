@@ -1,0 +1,2 @@
+extra/video-wizard-videos/home/videowiz/final.mpg filter=lfs diff=lfs merge=lfs -text
+extra/avwizard-sounds/home/public/data/avwizard-sounds/avwizard_dts_test.wav filter=lfs diff=lfs merge=lfs -text
