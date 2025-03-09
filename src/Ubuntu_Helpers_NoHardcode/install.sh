@@ -9,11 +9,30 @@ Arch="$(apt-config dump | grep '^APT::Architecture' | sed  's/.* "\(.*\)";$/\1/g
 
 # Install default config files
 echo "Installing Default Configs For $Distro-$Arch"
-rm -f "/etc/lmce-build"
+if [ -L "/etc/lmce-build" ]; then
+    echo "Found symlink at /etc/lmce-build, unlinking..."
+    unlink "/etc/lmce-build"
+else
+    echo "No symlink found at /etc/lmce-build, checking if it exists..."
+    if [ -e "/etc/lmce-build" ]; then
+        echo "File or directory exists at /etc/lmce-build, removing..."
+        rm -rf "/etc/lmce-build"
+    fi
+fi
+
 ln -s "$(pwd)/conf-files/${Distro}-${Arch}/" "/etc/lmce-build"
 
 echo "Creating symlink in /usr/local/lmce-build"
-rm -f "/usr/local/lmce-build"
+if [ -L "/usr/local/lmce-build" ]; then
+    echo "Found symlink at /usr/local/lmce-build, unlinking..."
+    unlink "/usr/local/lmce-build"
+else
+    echo "No symlink found at /usr/local/lmce-build, checking if it exists..."
+    if [ -e "/usr/local/lmce-build" ]; then
+        echo "File or directory exists at /usr/local/lmce-build, removing..."
+        rm -rf "/usr/local/lmce-build"
+    fi
+fi
 ln -s "$(pwd)" "/usr/local/lmce-build"
 
 #echo "Configure APT preferences"
