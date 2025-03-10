@@ -15,8 +15,7 @@ if [ -L "/etc/lmce-build" ]; then
 else
     echo "No symlink found at /etc/lmce-build, checking if it exists..."
     if [ -e "/etc/lmce-build" ]; then
-        echo "File or directory exists at /etc/lmce-build, removing..."
-        rm -rf "/etc/lmce-build"
+        echo "File or directory exists at /etc/lmce-build, removing..."       
     fi
 fi
 
