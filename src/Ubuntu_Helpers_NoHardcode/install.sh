@@ -3,9 +3,9 @@
 set -e
 
 
-Distro="$(lsb_release -c -s)"
-Release="$(lsb_release -s -r)"
-Arch="$(apt-config dump | grep '^APT::Architecture' | sed  's/.* "\(.*\)";$/\1/g')"
+Distro="$(lsb_release -c -s | tr -d '\n')"
+Release="$(lsb_release -s -r | tr -d '\n')"
+Arch="$(apt-config dump | grep '^APT::Architecture' | sed 's/.* "\(.*\)";$/\1/g' | head -1 | tr -d '\n')"
 
 # Install default config files
 echo "Installing Default Configs For $Distro-$Arch"
@@ -15,8 +15,7 @@ if [ -L "/etc/lmce-build" ]; then
 else
     echo "No symlink found at /etc/lmce-build, checking if it exists..."
     if [ -e "/etc/lmce-build" ]; then
-        echo "File or directory exists at /etc/lmce-build, removing..."
-        rm -rf "/etc/lmce-build"
+        echo "File or directory exists at /etc/lmce-build, removing..."       
     fi
 fi
 
