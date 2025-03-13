@@ -2,6 +2,7 @@
 
 function au_callrates() {
 	global $db_name, $db_table_name, $group_by_field, $where, $result_limit, $graph_col_title;
+	global $db_conn; // Assuming this is the mysqli connection object
 
 	/**************************** Config ****************************************************/
 	$au_call_rates = array(
@@ -16,7 +17,7 @@ function au_callrates() {
 	/****************************************************************************************/
 	$au_bill_tototal_q = "SELECT $group_by_field AS group_by_field FROM $db_name.$db_table_name $where GROUP BY group_by_field ORDER BY group_by_field ASC LIMIT $result_limit";
 	
-	$au_bill_tototal_r = mysql_query($au_bill_tototal_q) or die(mysql_error());
+	$au_bill_tototal_r = mysqli_query($db_conn, $au_bill_tototal_q) or die(mysqli_error($db_conn));
 
 	$au_callrates_total = array();
 	foreach ( array_keys($au_call_rates) as $key ) {
@@ -37,15 +38,15 @@ function au_callrates() {
 	
 	echo "<th>TOTAL<br/>(inc GST)</th></tr>";
 
-	while ($row = mysql_fetch_array($au_bill_tototal_r, MYSQL_NUM)) {
+	while ($row = mysqli_fetch_array($au_bill_tototal_r, MYSQLI_NUM)) {
 		$summ = 0;
 		echo "<tr class=\"record\">";
 		echo "<td>". $row[0] ."</td>";
 		foreach ( array_keys($au_call_rates) as $key ) {
 			$au_bill_ch_q = "SELECT dst, billsec FROM $db_name.$db_table_name $where and $group_by_field = '". $row[0] ."' and " . $au_call_rates["$key"];
-			$au_bill_ch_r = mysql_query($au_bill_ch_q) or die(mysql_error());
+			$au_bill_ch_r = mysqli_query($db_conn, $au_bill_ch_q) or die(mysqli_error($db_conn));
 			$summ_local = 0;
-			while ($bill_row = mysql_fetch_array($au_bill_ch_r, MYSQL_NUM)) {
+			while ($bill_row = mysqli_fetch_array($au_bill_ch_r, MYSQLI_NUM)) {
 				$rates = callrates( $bill_row[0], $bill_row[1], $au_callrates_csv_file );
 				$summ_local += $rates[4];
 			}

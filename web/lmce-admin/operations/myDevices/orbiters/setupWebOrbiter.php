@@ -59,7 +59,7 @@ function setupWebOrbiter($output,$dbADO) {
 				$json->data['Room'] = $room['FK_Room'];
 			}
 		} else {
-			$json->error = mysql_error();
+			$json->error = $dbADO->ErrorMsg();
 		}
 	break;
 	case "GenerateOrbiter":	// Generate the orbiter
@@ -202,7 +202,7 @@ function lookup($query, $dbADO, $json) {
 			$json->data[] = $row;
 		}
 	} else {
-		$json->error = mysql_error();
+		$json->error = $dbADO->ErrorMsg();
 	}
 }
 

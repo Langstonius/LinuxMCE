@@ -67,7 +67,7 @@ $sql ="SELECT File_Attribute.FK_File, Picture.PK_Picture, Picture.Extension, Fil
     
 $cleansql = mysqli_real_escape_string($connect, $sql);
 
-$res=mysqli_query($connect, $cleansql) or die( "MySQL error ".mysql_errno().": ".mysql_error($connect)."\n<br>When executing:<br>\n$res\n<br>" );
+$res=mysqli_query($connect, $cleansql) or die( "MySQL error ".mysqli_errno($connect).": ".mysqli_error($connect)."\n<br>When executing:<br>\n$cleansql\n<br>" );
 
 	while($row = mysqli_fetch_array($res)){
 	$file=$row['PK_Picture'].".".$row['Extension'];

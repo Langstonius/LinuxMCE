@@ -17,8 +17,17 @@ if (isset($_GET["d"])) {
 
 }
 
+// Connect to database
+$server = "localhost";
+$mysqlUser = "root";
+$mysqlPass = "";
+$conn = mysqli_connect($server, $mysqlUser, $mysqlPass, "pluto_main");
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
 if (isset($_GET['label'])) {
-	$label = mysql_real_escape_string($_GET['label']);
+	$label = mysqli_real_escape_string($conn, $_GET['label']);
 } else {
 	die("No description");
 }
@@ -27,23 +36,17 @@ if (isset($_GET['label'])) {
  Need to get children devices and do the same as the parent.
  */
 echo "Starting for deviceID::" . $deviceID . "<br>";
-$deviceName = mysql_real_escape_string($_GET['label']);
+$deviceName = mysqli_real_escape_string($conn, $_GET['label']);
 $mediaPlayerID = $deviceID + 1;
 $mobileRoom = -1;
 $mobileEa = -1;
-$server = "localhost";
-$mysqlUser = "root";
-$mysqlPass = "";
-$conn = mysql_connect($server, $mysqlUser, $mysqlPass);
-mysql_select_db("pluto_main", $conn);
-$dupe;
 
 if ($conn) {
 	$installSql = "SELECT * FROM `Installation` ";
-	$iRes = mysql_query($installSql, $conn) or die(mysql_error($conn));
+	$iRes = mysqli_query($conn, $installSql) or die(mysqli_error($conn));
 	$inst = "";
 
-	while ($row = mysql_fetch_array($iRes)) {
+	while ($row = mysqli_fetch_array($iRes, MYSQLI_ASSOC)) {
 		$inst = $row['PK_Installation'];
 	}
 
@@ -85,21 +88,21 @@ function checkIfDupe($conn) {
 	global $deviceID;
 	global $mediaPlayerID;
 	
-	 $GLOBALS['deviceName']=mysql_real_escape_string($_GET['label']);
-	 $deviceName= $GLOBALS['deviceName'];
+	$GLOBALS['deviceName'] = mysqli_real_escape_string($conn, $_GET['label']);
+	$deviceName = $GLOBALS['deviceName'];
 	
 
-echo "checking dupe for $deviceName<br>";
+    echo "checking dupe for $deviceName<br>";
 	$sql = "SELECT * from Device_EntertainArea where FK_Device= $mediaPlayerID ;";
 	echo "$sql<br>";
-	$result = mysql_query($sql);
+	$result = mysqli_query($conn, $sql);
 	$existingEa = NULL;
-	if (mysql_numrows($result) == 0) {
+	if (mysqli_num_rows($result) == 0) {
 		echo "no device found <br>";
 		return true;
 	} else {
 		echo "Found device matching criteria <br>";
-		while ($row = mysql_fetch_array($result)) {
+		while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 			$existingEa = $row['FK_EntertainArea'];
 			echo "Existing EntertainArea::$existingEa<br>";
 		}
@@ -109,12 +112,12 @@ echo "checking dupe for $deviceName<br>";
 		}
 
 		$query = "SELECT * from EntertainArea WHERE PK_EntertainArea=$existingEa";
-		$result = mysql_query($query);
+		$result = mysqli_query($conn, $query);
 
-		if (mysql_num_rows($result == 0)) {
-			die("Missing Poper EA all together!");
+		if (mysqli_num_rows($result) == 0) {
+			die("Missing Proper EA all together!");
 		} else {
-			while ($row = mysql_fetch_array($result)) {
+			while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 				
 				if($row['Description'] == $deviceName){
 					echo "nothing wrong with duplicate check<br> ";
@@ -141,9 +144,9 @@ echo "checking dupe for $deviceName<br>";
 
 function setParentDescription($conn) {
 	global $deviceID;
-	 $deviceName =$GLOBALS['deviceName'];
+	$deviceName = $GLOBALS['deviceName'];
 	
-echo "Setting Parent device to ".$GLOBALS['deviceName'];
+    echo "Setting Parent device to ".$GLOBALS['deviceName'];
 
 
 	if ($deviceName == "QOrbiter-Generic" || $deviceName=="localhost"){
@@ -153,22 +156,22 @@ echo "Setting Parent device to ".$GLOBALS['deviceName'];
 
 	echo "Setting parent device description label to " . $GLOBALS['deviceName']."<br>";
 	$sql = "UPDATE Device SET Description='" . $GLOBALS['deviceName'] . "' WHERE PK_Device='" . $deviceID . "';";
-	$result = mysql_query($sql, $conn);
+	$result = mysqli_query($conn, $sql);
 	return true;
 }
 
-function setEntertainArea($connect) {
+function setEntertainArea($conn) {
 	global $mediaPlayerID;
 	global $mobileRoom;
 	$deviceN = $GLOBALS['deviceName'];
 	
-	$d = mysql_real_escape_string($_GET['label']);
+	$d = mysqli_real_escape_string($conn, $_GET['label']);
 	echo "Creating EA " . $GLOBALS['deviceName'] . " in room: " . $mobileRoom . "<br>";
 
 	$sql = "INSERT INTO EntertainArea (FK_Room, Only1Stream,Description,Private,FK_FloorplanObjectType) Values ($mobileRoom,0,'$deviceN',0,52);";
 	echo "<br>$sql<br>";
-	mysql_query($sql, $connect);
-	$id = mysql_insert_id($connect);
+	mysqli_query($conn, $sql);
+	$id = mysqli_insert_id($conn);
 	echo "last insert id $id<br>";
 
 	$ea = $id;
@@ -181,35 +184,37 @@ function setEntertainArea($connect) {
 	}
 
 	$sql2 = "SELECT * FROM `Device_EntertainArea` WHERE `FK_Device` =" . $mediaPlayerID . " LIMIT 0, 30 ";
-	$result2 = mysql_query($sql2, $connect) or die(mysql_error($connect));
-	$row = mysql_fetch_array($result2);
+	$result2 = mysqli_query($conn, $sql2) or die(mysqli_error($conn));
+	$row = mysqli_fetch_array($result2, MYSQLI_ASSOC);
 
-	if (mysql_num_rows() == 0) {
+	if (mysqli_num_rows($result2) == 0) {
 		echo "Device not present in Device_EntertainArea, adding to table";
 		$sql3 = "INSERT INTO `pluto_main`.`Device_EntertainArea` (`FK_Device`, `FK_EntertainArea`, `psc_id`, `psc_batch`, `psc_user`, `psc_frozen`, `psc_mod`, `psc_restrict`) VALUES ( $mediaPlayerID ,  $ea , NULL, NULL, NULL, '0', CURRENT_TIMESTAMP, NULL);";
 		echo "<br>$sql3<br>";
-		$result3 = mysql_query($sql3, $connect) or die(mysql_error($connect));
+		$result3 = mysqli_query($conn, $sql3) or die(mysqli_error($conn));
 	}
 }
 
 function setupMobileRoom($conn) {
 	global $mobileRoom;
+	global $installation;
+	
 	echo "<br>Connection Found, Starting<br>";
 
 	$roomSql = "SELECT * FROM `Room` WHERE `Description` like 'Mobile' LIMIT 0, 30 ";
 	echo "Checking for existing mobile orbiter room <br>";
-	$result = mysql_query($roomSql, $conn) or die(mysql_error($conn));
-	$cnt = mysql_num_rows($result);
+	$result = mysqli_query($conn, $roomSql) or die(mysqli_error($conn));
+	$cnt = mysqli_num_rows($result);
 
 	if ($cnt === 0) {
 
 		$iRoomSql = "INSERT INTO `pluto_main`.`Room` (`PK_Room`, `FK_Installation`, `FK_RoomType`, `Description`, `FK_Icon`, `ManuallyConfigureEA`, `HideFromOrbiter`, `FK_FloorplanObjectType`, `FloorplanInfo`, `psc_id`, `psc_batch`, `psc_user`, `psc_frozen`, `psc_mod`, `psc_restrict`) VALUES (NULL, " . $installation . ", '9', 'Mobile', NULL, '1', '1', NULL, NULL, NULL, NULL, NULL, '0', CURRENT_TIMESTAMP, NULL);";
-		$result2 = mysql_query($iRoomSql, $conn) or die(mysql_error($conn));
-		$lastId = mysql_insert_id($conn);
+		$result2 = mysqli_query($conn, $iRoomSql) or die(mysqli_error($conn));
+		$lastId = mysqli_insert_id($conn);
 
-		$chkSql = $roomSql = "SELECT * FROM `Room` WHERE `PK_Room` = " . $lastId;
-		$result3 = mysql_query($chkSql, $conn) or die(mysql_error($conn));
-		while ($row = mysql_fetch_array($result3)) {
+		$chkSql = "SELECT * FROM `Room` WHERE `PK_Room` = " . $lastId;
+		$result3 = mysqli_query($conn, $chkSql) or die(mysqli_error($conn));
+		while ($row = mysqli_fetch_array($result3, MYSQLI_ASSOC)) {
 			if ($row['PK_Room']) {
 				$mobileRoom = $row['PK_Room'];
 				echo "Mobile QOrbiters Room is " . $mobileRoom;
@@ -217,7 +222,7 @@ function setupMobileRoom($conn) {
 		}
 		echo "Not Found, so we've added it. Setting up entertain area now<br>";
 	} else {
-		while ($row = mysql_fetch_array($result)) {
+		while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 			if ($row['PK_Room']) {
 				$mobileRoom = $row['PK_Room'];
 				echo "Mobile QOrbiters Room is " . $mobileRoom . "<br>";
@@ -231,7 +236,7 @@ function setupMobileRoom($conn) {
 
 function fixIntEa($conn) {
 	global $mobileRoom;
-	global $deviceName; // = mysql_real_escape_string($_GET['label']);
+	global $deviceName;
 
 	$mp = $_GET['d'];
 	$mediaPlayerID = $mp + 1;
@@ -239,16 +244,16 @@ function fixIntEa($conn) {
 	echo "<br><b>Checking for incorrect int ea settings for device id::" . $mp . "</b> in room " . $mobileRoom . "<br>";
 	//first check that we dont have duplicate entries in the entertain area table
 	$sql = "SELECT * FROM `EntertainArea` WHERE `Description` LIKE '" . $mp . "' LIMIT 0, 30 ";
-	$result = mysql_query($sql, $conn) or die(mysql_error($conn));
+	$result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-	if (mysql_num_rows($result) == 0) {
+	if (mysqli_num_rows($result) == 0) {
 		echo "No int EntertainArea for " . $GLOBALS['deviceName'] . " to fix<br>";
 		return true;
 	} else {
-		while ($row = mysql_fetch_array($result)) {
+		while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 			echo "Found int EntertainArea. Incorrect setting  for device " . $deviceName . " in " . $row['PK_EntertainArea'] . "<br>";
 			$correctionSql = "UPDATE EntertainArea SET Description='" . $GLOBALS['deviceName'] . "', FK_Room='" . $mobileRoom . "'  WHERE PK_EntertainArea = '" . $row['PK_EntertainArea'] . "'";
-			$correctionResult = mysql_query($correctionSql, $conn);
+			$correctionResult = mysqli_query($conn, $correctionSql);
 			echo "Setting Corrected.<br>";
 			return true;
 		}
@@ -258,25 +263,23 @@ function fixIntEa($conn) {
 
 function fixRoomEa($conn) {
 	global $mobileRoom;
-	$deviceName; // = mysql_real_escape_string($_GET['label']);
 	$mp = $_GET['d'];
 	$mediaPlayerID = $mp + 1;
 	echo "<br>Checking named EntertainAreas for correct Settings for device " . $GLOBALS['deviceName'] . "<br>";
 
 	$sql = "SELECT * FROM `EntertainArea` WHERE `Description` LIKE '" . $GLOBALS['deviceName'] . "' LIMIT 0, 30 ";
-	$result = mysql_query($sql, $conn) or die(mysql_error($conn));
+	$result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-	if (mysql_num_rows($result) == 0) {
+	if (mysqli_num_rows($result) == 0) {
 		echo "No EntertainArea present, will create one for device " . $GLOBALS['deviceName'] . "<br>";
 		setEntertainArea($conn);
 		return true;
 	} else {
 		echo "Existing EntertainArea found, will validate ...";
-		while ($row = mysql_fetch_array($result)) {
+		while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 			echo " . ";
-			$correctionSql = "UPDATE EntertainArea SET Description = " . $GLOBALS['deviceName'] . " , FK_Room=" . $mobileRoom . "  WHERE PK_EntertainArea = " . $row["PK_EntertainArea"] . ";";
-			$correctionResult = mysql_query($corrctionSql, $conn);
-
+			$correctionSql = "UPDATE EntertainArea SET Description = '" . $GLOBALS['deviceName'] . "' , FK_Room=" . $mobileRoom . "  WHERE PK_EntertainArea = " . $row["PK_EntertainArea"] . ";";
+			$correctionResult = mysqli_query($conn, $correctionSql);
 		}
 		echo " complete <br>";
 		return true;
@@ -284,31 +287,31 @@ function fixRoomEa($conn) {
 }
 
 function precheckDeviceEntertainArea($conn) {
-	global $deviceName; // = mysql_real_escape_string($_GET['label']);
+	global $deviceName;
 	$mp = $_GET['d'];
 	$mediaPlayerID = $mp + 1;
 
 	echo "<br>Checking Device_EntertainArea to validate qMediaPlayer Settings for QOrbiter on device::" . $GLOBALS['deviceName'] . "<br>";
 
 	$sql2 = "SELECT * FROM `Device_EntertainArea` WHERE `FK_Device` =" . $mp . " LIMIT 0, 30 ";
-	$result2 = mysql_query($sql2, $conn) or die(mysql_error($conn));
+	$result2 = mysqli_query($conn, $sql2) or die(mysqli_error($conn));
 
-	if (mysql_num_rows($result2) == 0) {
+	if (mysqli_num_rows($result2) == 0) {
 		echo "parent device not set, continuing.<br>";
 		$sql = "SELECT * FROM `Device_EntertainArea` WHERE `FK_Device` =" . $mediaPlayerID . " LIMIT 0, 30 ";
-		$result = mysql_query($sql, $conn) or die(mysql_error($conn));
+		$result = mysqli_query($conn, $sql) or die(mysqli_error($conn));
 
-		if (mysql_num_rows($result) == 0) {
+		if (mysqli_num_rows($result) == 0) {
 			echo "Missing Entry, needs to be added for " . $GLOBALS['deviceName'] . "<br> ";
 
 			$check = "SELECT * FROM EntertainArea WHERE Description LIKE '" . $_GET['label'] . "' ";
-			$checkResult = mysql_query($check, $conn) or die(mysql_error($conn));			$ea;
+			$checkResult = mysqli_query($conn, $check) or die(mysqli_error($conn));
+			$ea = null;
 
-			echo mysql_num_rows($checkResult);
+			echo mysqli_num_rows($checkResult);
 
-			while ($checkRow = mysql_fetch_array($checkResult)) {
+			while ($checkRow = mysqli_fetch_array($checkResult, MYSQLI_ASSOC)) {
 				$ea = $checkRow['PK_EntertainArea'];
-
 			}
 
 			if (is_null($ea)) {
@@ -319,14 +322,14 @@ function precheckDeviceEntertainArea($conn) {
 			}
 
 			$sql3 = "INSERT INTO `pluto_main`.`Device_EntertainArea` (`FK_Device`, `FK_EntertainArea`, `psc_id`, `psc_batch`, `psc_user`, `psc_frozen`, `psc_mod`, `psc_restrict`) VALUES (" . $mediaPlayerID . ", " . $ea . ", NULL, NULL, NULL, '0', CURRENT_TIMESTAMP, NULL);";
-			$result3 = mysql_query($sql3, $conn) or die(mysql_error($conn));
+			$result3 = mysqli_query($conn, $sql3) or die(mysqli_error($conn));
 
 			return true;
 		} else {
 			echo "device in table<br>";
-			while ($row = mysql_fetch_array($result)) {
-				$cleanupSql = "UPDATE Device_EntertainArea SET FK_Device= " . $mediaPlayerID . " , WHERE PK_EntertainArea = " . $row["PK_EntertainArea"] . ";";
-				$result = mysql_query($cleanupSql, $conn);
+			while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+				$cleanupSql = "UPDATE Device_EntertainArea SET FK_Device= " . $mediaPlayerID . " WHERE PK_EntertainArea = " . $row["PK_EntertainArea"] . ";";
+				$result = mysqli_query($conn, $cleanupSql);
 				return true;
 			}
 		}
@@ -337,12 +340,12 @@ function precheckDeviceEntertainArea($conn) {
 
 }
 
-function updateEntertainArea($connect, $device, $location) {
+function updateEntertainArea($conn, $device, $location) {
 	echo "Updating device to existing EA <br>";
 
-	global $deviceName; // = mysql_real_escape_string($_GET['label']);
 	$mp = $_GET['d'];
 	$mediaPlayerID = $mp + 1;
+	global $mobileEa;
 
 	if ($mobileEa == -1) {
 		echo "invalid ea, exiting updateEntertainArea()";
@@ -350,7 +353,7 @@ function updateEntertainArea($connect, $device, $location) {
 	}
 	echo "updating...<br>";
 	$updatesql = "UPDATE `pluto_main`.`Device_EntertainArea` SET `FK_EntertainArea` = " . $mobileEa . " WHERE `Device_EntertainArea`.`FK_Device` = " . $mediaPlayerID;
-	$result = mysql_query($updatesql, $connect) or die(mysql_error($conn));
+	$result = mysqli_query($conn, $updatesql) or die(mysqli_error($conn));
 	echo "updated. <br>";
 }
   ?>

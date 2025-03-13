@@ -230,8 +230,10 @@ function GetFileID($path,$mediadbADO)
     $filename = $filearray[count($filearray)-1];
     $filepathoffset = strpos($path,$filename);
     $filepath = substr($path,0,$filepathoffset-1);
-    $filepath = mysql_escape_string($filepath);
-    $filename = mysql_escape_string($filename);
+    // Get database connection from ADODB
+    $conn = $mediadbADO->_connectionID;
+    $filepath = mysqli_real_escape_string($conn, $filepath);
+    $filename = mysqli_real_escape_string($conn, $filename);
     $resfileID = $mediadbADO->Execute("SELECT PK_File FROM File WHERE Path = '$filepath' AND Filename = '$filename';");
     $rowfileID = $resfileID->FetchRow();
     $fileID = $rowfileID['PK_File'];
@@ -284,7 +286,8 @@ function SetTVAttributes($path,$mediadbADO,$season,$episode,$title)
 
 function GetAttributeType($desc,$mediadbADO)
 {
-    $safedesc = mysql_escape_string($desc);
+    $conn = $mediadbADO->_connectionID;
+    $safedesc = mysqli_real_escape_string($conn, $desc);
     $resTypeID = $mediadbADO->Execute("SELECT PK_AttributeType FROM AttributeType WHERE Description = '$safedesc';");
     $rowTypeID = $resTypeID->FetchRow();
     return $rowTypeID['PK_AttributeType'];
@@ -299,7 +302,8 @@ function GetTypeFromAttribute($attribute,$mediadbADO)
 
 function GetAttribute($name,$typeid,$mediadbADO)
 {
-    $safename = mysql_escape_string($name);
+    $conn = $mediadbADO->_connectionID;
+    $safename = mysqli_real_escape_string($conn, $name);
     $resAttribute = $mediadbADO->Execute("SELECT PK_Attribute FROM Attribute WHERE Name = '$safename' AND FK_AttributeType = '$typeid';");
     if($rowAttribute = $resAttribute->FetchRow())
     {
@@ -390,7 +394,8 @@ function SetFileAttributes($path,$mediadbADO,$attribs)
 	$q .= "'".$record['FK_AttributeType']."',";
 	$q .= "'".$record['FK_Disc']."',";
 	$q .= "'".$record['FK_Attribute']."',";
-	$q .= "'".mysql_escape_string($record['Text'])."',";
+	$conn = $mediadbADO->_connectionID;
+	$q .= "'".mysqli_real_escape_string($conn, $record['Text'])."',";
 	//$q .= "'".$record['psc_id']."',";
 	//$q .= "'".$record['psc_batch']."',";
 	//$q .= "'".$record['psc_user']."',";

@@ -260,7 +260,7 @@ function emailSetup($output,$dbADO) {
 		
 		$token=join(',',$emailSettings);
 		$dbADO->Execute("UPDATE Device_DeviceData SET IK_DeviceData='".$token."' WHERE FK_Device=1 AND FK_DeviceData=".$GLOBALS['EmailSettings']) 
-	 		or die('ERROR: Invalid query: '.mysql_error());
+	 		or die('ERROR: Invalid query: '.$dbADO->ErrorMsg());
 
 		// Lookup country
 		$query = "SELECT Installation.*,Version.Description AS V_Desc FROM Installation 

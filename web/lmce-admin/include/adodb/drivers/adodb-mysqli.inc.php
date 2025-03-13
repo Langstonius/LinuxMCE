@@ -235,21 +235,17 @@ class ADODB_mysqli extends ADOConnection {
 	function qstr($s, $magic_quotes = false)
 	{
 		if (is_null($s)) return 'NULL';
-		if (!$magic_quotes) {
-			// mysqli_real_escape_string() throws a warning when the given
-			// connection is invalid
-			if (PHP_VERSION >= 5 && $this->_connectionID) {
-				return "'" . mysqli_real_escape_string($this->_connectionID, $s) . "'";
-			}
-
-			if ($this->replaceQuote[0] == '\\') {
-				$s = adodb_str_replace(array('\\',"\0"), array('\\\\',"\\\0") ,$s);
-			}
-			return "'" . str_replace("'", $this->replaceQuote, $s) . "'";
+		
+		// PHP 7+ no longer has magic quotes, so we handle all strings the same
+		// mysqli_real_escape_string() throws a warning when the given connection is invalid
+		if ($this->_connectionID) {
+			return "'" . mysqli_real_escape_string($this->_connectionID, $s) . "'";
 		}
-		// undo magic quotes for "
-		$s = str_replace('\\"','"',$s);
-		return "'$s'";
+
+		if ($this->replaceQuote[0] == '\\') {
+			$s = adodb_str_replace(array('\\',"\0"), array('\\\\',"\\\0") ,$s);
+		}
+		return "'" . str_replace("'", $this->replaceQuote, $s) . "'";
 	}
 
 	function _insertid()

@@ -123,8 +123,10 @@ function getPagesMenu($query,$start,$items,$orderBy,$orderType,$url)
    $_SESSION['sortType']  = $orderType;
  }
  
- $res = @mysql_query($query);
- $rows = @(int)mysql_num_rows($res);
+ // Get connection from global database connection
+ $conn = $GLOBALS['dbADO']->_connectionID;
+ $res = @mysqli_query($conn, $query);
+ $rows = @(int)mysqli_num_rows($res);
  if( ($rows>0) && ($rows>$items) ){
    
      $pages = $rows/$items;

@@ -472,9 +472,11 @@ function internet_radio($output,$mediadbADO,$dbADO) {
 }
 		//add the station maually.
 		if ($_POST['action'] == 'add_manual') {
-			$station_name=mysql_real_escape_string($_POST['station_name']);
-			$stream_url=mysql_real_escape_string($_POST['stream_url']);
-			$station_genre=mysql_real_escape_string($_POST['station_genre']);
+			// Get a connection object from ADOdb
+			$conn = $mediadbADO->_connectionID;
+			$station_name=mysqli_real_escape_string($conn, $_POST['station_name']);
+			$stream_url=mysqli_real_escape_string($conn, $_POST['stream_url']);
+			$station_genre=mysqli_real_escape_string($conn, $_POST['station_genre']);
 			$date=date('Y-m-d H:i:s');
 			//check of the url exists
 			$res=$mediadbADO->Execute("SELECT PK_File FROM File WHERE Filename='".$stream_url."'");
@@ -545,7 +547,7 @@ function writeConf($accessFile, $variable,$oldValue,$newValue)
 	}
 	$oldFile=implode('',$oldFileArray);
 	$stringToReplace=$variable.'='.$oldValue;
-	if(ereg($stringToReplace,$oldFile)){
+	if(preg_match('/' . preg_quote($stringToReplace, '/') . '/', $oldFile)){
 		$newFile=str_replace($stringToReplace,$variable.'='.$newValue,$oldFile);
 	}
 	else

@@ -183,16 +183,16 @@ function tmdbSaveData($output, $mediadbADO, $dbADO) {
 	$pass = "";
 	$user = "root";
 	$db = "pluto_media";
-	$con = mysql_connect("localhost", $user, $pass);
+	$con = mysqli_connect("localhost", $user, $pass, $db);
 	// connection
-	if (!$con) { die('Could not Connect' . mysql_error());
+	if (!$con) { 
+		die('Could not Connect' . mysqli_error($con));
 		//error messaging
 		$connMessage = "Fail";
-	};
-	if ($con) {mysql_select_db("pluto_media") or die(mysql_error());
-		//connect to media db or error out
+	} else {
+		//connect successful
 		$connMessage = "Conn Good";
-	};
+	}
 	if (!$tmdb) {
 		$tmdb = new TMDb('6ba51a94858c1748757dc06f7d4afbaa', $GLOBALS['lang'], false);
 		//$config = $tmdb -> getConfig();
@@ -212,7 +212,7 @@ function tmdbSaveData($output, $mediadbADO, $dbADO) {
 
 	$query = "SELECT PK_AttributeType, Description from AttributeType";
 
-	$result = mysql_query($query);
+	$result = mysqli_query($con, $query) or die(mysqli_error($con));
 
 	$postersize = "original";
 	$backdropsize = "original";
@@ -236,7 +236,7 @@ function tmdbSaveData($output, $mediadbADO, $dbADO) {
 	$actors = $cast['cast'];
 	$crew = $cast['crew'];
 
-	$synopsis = mysql_real_escape_string($movie['overview']);
+	$synopsis = mysqli_real_escape_string($con, $movie['overview']);
 	$backdrop_path = $movie['backdrop_path'];
 	$backdropUrl = $tmdb -> getImageUrl($val['backdrop_path'], TMDb::IMAGE_BACKDROP, 'original') . $backdrop_path;
 
@@ -348,8 +348,8 @@ function tmdbSaveData($output, $mediadbADO, $dbADO) {
 		<td>' . insertAttribute($movie['runtime'], $typeArray['Run Time'], false, $imagePath, $mediadbADO, $dbADO) . '</td>
 	</tr>';
 
-	mysql_query("UPDATE File SET FK_FileFormat=\"$format\" WHERE `PK_File`=\"$fileID\" ") or die(mysql_error());
-	mysql_query("UPDATE File SET FK_MediaSubType=2 WHERE `PK_File`=\"$fileID\" ") or die(mysql_error());
+	mysqli_query($con, "UPDATE File SET FK_FileFormat=\"$format\" WHERE `PK_File`=\"$fileID\" ") or die(mysqli_error($con));
+	mysqli_query($con, "UPDATE File SET FK_MediaSubType=2 WHERE `PK_File`=\"$fileID\" ") or die(mysqli_error($con));
 
 	/*attrbiute insertion notification table*/
 
@@ -364,12 +364,13 @@ function tmdbSaveData($output, $mediadbADO, $dbADO) {
 }
 
 function insertAttribute($attribute, $attributeType, $hasImage, $imagePath, $mediadbADO, $dbADO) {
+	global $con;
 
 	$sql = "SELECT * FROM `Attribute` WHERE `Name` = \"$attribute\" AND FK_AttributeType = \"$attributeType\"";
-	$result = mysql_query($sql) or die(mysql_error());
-	$row = mysql_fetch_assoc($result);
+	$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+	$row = mysqli_fetch_assoc($result);
 	$attrib = $row['PK_Attribute'];
-	$count = mysql_num_rows($result);
+	$count = mysqli_num_rows($result);
 	//echo "<br>Rows found for attribute search=".$count;
 	//echo "<br>Attribute::".$attribute;
 	$attrib = $row['PK_Attribute'];
@@ -377,11 +378,11 @@ function insertAttribute($attribute, $attributeType, $hasImage, $imagePath, $med
 	$fileID = $_POST['fileID'];
 	if ($count < 1) {
 		$iQuery = "INSERT INTO Attribute VALUES (\"\" , \"$attributeType\" , \"$attribute\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )";
-		mysql_query($iQuery) or die(mysql_error());
-		$insertRes = (int)mysql_insert_id() or die(mysql_error());
+		mysqli_query($con, $iQuery) or die(mysqli_error($con));
+		$insertRes = (int)mysqli_insert_id($con) or die(mysqli_error($con));
 		//echo $insertRes;
 		$idQuery = "INSERT INTO File_Attribute  VALUES (\"$fileID\", \"$insertRes\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-		mysql_query($idQuery) or die(mysql_error());
+		mysqli_query($con, $idQuery) or die(mysqli_error($con));
 		if ($imagePath != "") {
 				printf("Saving attribute image \n with attribute::" . $chk['FK_Attribute']);
 				$imgResponse = saveAttributeImage($insertRes, $attributeType, $imagePath);
@@ -390,9 +391,9 @@ function insertAttribute($attribute, $attributeType, $hasImage, $imagePath, $med
 	} else {
 
 		$fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= \"$attrib\" AND `FK_File` = \"$fileID\"";
-		$chkResult = mysql_query($fileChk) or die(mysql_error());
-		$chkCount = mysql_num_rows($chkResult);
-		$chk = mysql_fetch_assoc($chkResult);
+		$chkResult = mysqli_query($con, $fileChk) or die(mysqli_error($con));
+		$chkCount = mysqli_num_rows($chkResult);
+		$chk = mysqli_fetch_assoc($chkResult);
 		$test = $chk['FK_Attribute'];
 	//	echo "test::" . $test ."::".$chkCount."<br>";
 		// echo $attrib;
@@ -408,7 +409,7 @@ function insertAttribute($attribute, $attributeType, $hasImage, $imagePath, $med
 					$idQuery2 .= "INSERT INTO File_Attribute  VALUES (\"$fileID\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
 					break;
 			}
-			mysql_query($idQuery2) or die(mysql_error());
+			mysqli_query($con, $idQuery2) or die(mysqli_error($con));
 			
 			
 			if ($imagePath != "") {
@@ -428,13 +429,14 @@ function insertAttribute($attribute, $attributeType, $hasImage, $imagePath, $med
 }
 
 function saveAttributeImage($attribute, $attributeType, $imagePath) {
+	global $con;
 
 	//echo "now saving attribute picture for attribute type::" . $attributeType . " and attribute::" . $attribute;
 	$fileIdent = $_POST['fileID'];
 	//print_r($fileIdent);
-	$test = mysql_query("SELECT * FROM Picture_Attribute WHERE FK_Attribute=\"$attribute\" ") or die(mysql_error("MYsql Error"));
-	$fileCount = mysql_num_rows($test);
-	$tarray = mysql_fetch_assoc($test);
+	$test = mysqli_query($con, "SELECT * FROM Picture_Attribute WHERE FK_Attribute=\"$attribute\" ") or die(mysqli_error($con));
+	$fileCount = mysqli_num_rows($test);
+	$tarray = mysqli_fetch_assoc($test);
 
 	
 	if ($fileCount < 1) {
@@ -450,9 +452,9 @@ function saveAttributeImage($attribute, $attributeType, $imagePath) {
 		$extension = strtolower(str_replace('.', '', strrchr($import_cover_art, ".")));
 
 		if ($import_cover_art != '') {
-			mysql_query("INSERT INTO Picture (Extension,URL) VALUES (\"$extension\", \"$import_cover_art\")");
-			$picID = (int)mysql_insert_id() or die(mysql_error());
-			mysql_query("INSERT INTO Picture_Attribute (FK_Picture, FK_Attribute) VALUES (\"$picID\",\"$attribute\")");
+			mysqli_query($con, "INSERT INTO Picture (Extension,URL) VALUES (\"$extension\", \"$import_cover_art\")") or die(mysqli_error($con));
+			$picID = (int)mysqli_insert_id($con) or die(mysqli_error($con));
+			mysqli_query($con, "INSERT INTO Picture_Attribute (FK_Picture, FK_Attribute) VALUES (\"$picID\",\"$attribute\")") or die(mysqli_error($con));
 
 			// create the file and the thumbnail
 			$extension = ($extension == 'jpeg') ? 'jpg' : $extension;
@@ -488,10 +490,11 @@ function saveAttributeImage($attribute, $attributeType, $imagePath) {
 }
 
 function saveFileImage($title, $remoteImagePath) {
+	global $con;
 	$fileIdent = $_POST['fileID'];
 	//print_r($fileIdent);
-	$test = mysql_query("SELECT * FROM Picture_File WHERE FK_File=\"$fileIdent\" ") or die(mysql_error());
-	$fileCount = mysql_num_rows($test);
+	$test = mysqli_query($con, "SELECT * FROM Picture_File WHERE FK_File=\"$fileIdent\" ") or die(mysqli_error($con));
+	$fileCount = mysqli_num_rows($test);
 
 	if ($fileCount < 1) {
 		$fullUrl = $remoteImagePath;
@@ -505,9 +508,9 @@ function saveFileImage($title, $remoteImagePath) {
 		$extension = strtolower(str_replace('.', '', strrchr($import_cover_art, ".")));
 
 		if ($import_cover_art != '') {
-			mysql_query("INSERT INTO Picture (Extension,URL) VALUES (\"$extension\", \"$import_cover_art\")");
-			$picID = (int)mysql_insert_id() or die(mysql_error());
-			mysql_query("INSERT INTO Picture_File (FK_Picture,FK_File) VALUES (\"$picID\",\"$fileIdent\")");
+			mysqli_query($con, "INSERT INTO Picture (Extension,URL) VALUES (\"$extension\", \"$import_cover_art\")") or die(mysqli_error($con));
+			$picID = (int)mysqli_insert_id($con) or die(mysqli_error($con));
+			mysqli_query($con, "INSERT INTO Picture_File (FK_Picture,FK_File) VALUES (\"$picID\",\"$fileIdent\")") or die(mysqli_error($con));
 
 			// create the file and the thumbnail
 			$extension = ($extension == 'jpeg') ? 'jpg' : $extension;

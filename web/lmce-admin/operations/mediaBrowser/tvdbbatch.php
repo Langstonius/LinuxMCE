@@ -16,596 +16,843 @@
 function  tvdbBatch($output,$mediadbADO,$dbADO)	 
 {	include(APPROOT.'/languages/'.$GLOBALS['lang'].'/common.lang.php');
 	include(APPROOT.'/languages/'.$GLOBALS['lang'].'/editMediaFile.lang.php');
-	
+
 
 $scriptInHead='<script src="javascript/prototype.js" type="text/javascript" language="JavaScript"></script>
  			<script src="javascript/scriptaculous.js" type="text/javascript" language="JavaScript"></script>
  			
  		<style>	
  			#container{
-width:600px;
-height: 300px;
-border: 8px solid #FFF;
-margin: 0 auto;
-overflow-x: hidden;
-}
-
-.slider{
-width: 600%;
-height: 260px;
-padding: 25px;
-background: #CCCCCC;
-overflow-x: hidden;
-}
-
-.section{
-margin:0;
-width:250px;
-margin-right:5px;
-float:left;
-
-}
-</style>' ;
-	$fileFormatEnum = array (1 => "Low Res",2 => "DVD",3 => "Standard Def", 4 => "HD 720", 5 => "HD 1080", 6 => "Low Quality", 7 => "MP3", 8 => "CD Quality", 9 => "High-def audio");
-	$xmlPath='/var/tmp';
-	$lang = $_POST['lang'];
-	$apiKey = "4C6CEBDFB4558279";
-	$showName = $_POST['showName']; 
-	$sID = $_POST['showID'];
-	$cSno =$_POST['sNo'];
-	$seriesDataRequest = 'http://www.thetvdb.com/api/'.$apiKey.'/series/'.$sID.'/all/'.$lang.'.zip ';
-	$flag='new';
-	$dataFile = file_get_contents($seriesDataRequest, $flag);
-	saveData($dataFile);
-	//$episodeNo =$_POST['epNo'];
-	$fileID = $_POST['fileID'];
-	$showData =$_POST['seriesData'];
-	$seasonNo = $cSno;
-	
-	//$tempTrashArray = explode("," , $_POST['unlinkFiles']);
-	//$unlinkArray =array_slice( $tempTrashArray, "1");
-	//print_r($unlinkArray);	
-	
-	
-	$externalAttributesBtn4='<input type="button" class="button_fixed" value="Back" onClick="self.location=\'index.php?section=checkTVDB&fileID='.$fileID.'\'">';
-		
-	$episodeInfo= getSeriesData($sID, $lang, $data, $xmlPath, $mediadbADO, $dbADO, $output, $fileID, $seasonNo, $episodeNo);
-	//print_r($episodeInfo);
-	$combine = 'Season'.$seasonNo;
-	$sImgP = key($episodeInfo['series']['seriesImg'][1][$combine]);
-	$sImg = $episodeInfo['series']['seriesImg'][1][$combine][$sImgP]['bannerpath'];
-	
-	//--------------special case for image processing on the fly because the cant be hotlinked from thetvb.com-------------------|
-				$picPath= 'http://www.thetvdb.com/banners/_cache/'.$epinfo2['seriesImg'].$sImg;				
-				$img = file_get_contents($picPath);		
-				$tempfile = fopen('coverartscan/batchImg'.$showID.$seasonNo.'.jpg', 'w');
-				fwrite($tempfile, $img);
-				fclose($tempfile);		
-				$SimgPath = 'coverartscan/batchImg'.$showID.$seasonNo.'.jpg';		
-								
-				//---------------------------------------------------------------------------------------------------------------------------|
-	
-	//echo $seasonNo;
-	//print_r($sImg);
-	$out='<form action="index.php" method="post" name="batchFiles" id="fileList"><table align="center" width="85%" border="0" cellpadding="5" id="MainTable"> 
-    <tr>
-        <th colspan="3"><b>Series Information</b>
-        </th>        
-    </tr>
-    <tr>
-        <td  width="20%" rowspan="3"><img src='.$SimgPath.' id="f_in" style="display:none;" border="1" height="216" width="150" align="left">
-       	<div align="center"><input type="submit" action="Submit"  value="Go"  /></div> </td></tr>
-        <tr>
-         <td ><h2><b>'.$episodeInfo['series']['series'].'<b/> - Season: '.$seasonNo.'</h2>
-         <p> Series Description<br>'.$episodeInfo['series']['desc'].'</p>         
-         </td><tr> 
-        <td align="Left">Genre(s): <b>'.$episodeInfo['series']['genre'].'
-        </td>  
-         <tr/>     	         
-        <tr bgcolor="#FFFFFF"><td colspan="2" align="left" >	Files to Be Batch Processed ---------Override Resolution: <select name="rezMaster" maxlength=15>
-						<option value="" selected="selected"></option>
-						<option value="3">Standard Def</option>
-						<option value="4">HD 720</option>
-						<option value="5">HD 1080</option> </select>					    
-       <span align="right">-----------------Not the Right season? '.$externalAttributesBtn4.'</span></td>      
-    </tr>
-    <tr><td align="center" colspan="3" width="100%" style=" overflow-x: hidden; overflow-y: hidden; height: 300px;   ">
-    <div style="overflow-x: scroll; width: 800px; height: 275px; " >    
-  	<div style="overflow-x: hidden ; height: 240px ; width: 6750px;" >
-   ';
-
-		$pathQuery= 'SELECT * FROM File WHERE PK_File=?';
-		$pth=$mediadbADO->Execute($pathQuery,$fileID);
-		$pathFetch=$pth->FetchRow();
-		$path=$pathFetch['Path'].'/'.$pathFetch['Filename'];
-	//	echo $path;
-		$dirQuery = 'SELECT *  FROM File WHERE Path = ? AND EK_MediaType=5 ';
-		$fileList=$mediadbADO->Execute($dirQuery,$path);
-		
-		$arrayFiles = array();
-		$fileCount=0;
-		
-		while($rowFiles=$fileList->FetchRow())
-			{	$seasonNo =$cSno;
-				$guessedArray = stringParse($rowFiles['Filename']) ;
-				$episodeNo = $guessedArray['ep'][0];
-				$rez = $guessedArray['rez'];
-				$fileID = $rowFiles['PK_File'];
-				
-				$epinfo2 = getSeriesData($sID, $lang, $xmlPath, $mediadbADO, $dbADO, $output, $fileID, $seasonNo, $episodeNo);
-											
-				//--------------special case for image processing on the fly because the cant be hotlinked from thetvb.com-------------------|
-				$picPath= 'http://www.thetvdb.com/banners/_cache/'.$epinfo2['epImg'];
-				$img = file_get_contents($picPath);		
-				//echo $picPath;
-				$tempfile = fopen('coverartscan/batchImg'.$showID.$episodeNo.'.jpg', 'w');
-				fwrite($tempfile, $img);
-				fclose($tempfile);		
-				$imgPath = 'coverartscan/batchImg'.$showID.$episodeNo.'.jpg';		
-								
-				//---------------------------------------------------------------------------------------------------------------------------|
-				
-				$out.='	<div style=" float:left;"></nobr>						
-						<div class="section"><p>
-					'.$TEXT_FILENAME_CONST.': '.$rowFiles['Filename'].'<br>
-						<img src="'.$imgPath.'" height="100" width"300" ><br>
-						<b>Title - <i>'.$epinfo2['title'].'</i>-----------Include</b><input type="checkbox" name="file[]" value="'.$rowFiles['PK_File'].'"  id="chk"  checked="true" />
-						<br><select name="rezOver[]" maxlength=15>
-						<option value="'.$rez.'" selected="selected">'.$fileFormatEnum[$rez].'</option>
-						<option value="3">Standard Def</option>
-						<option value="4">HD 720</option>
-						<option value="5">HD 1080</option><br> 													
-							<input type="hidden" id="fileID" name="fileID[]" value="'.$rowFiles['PK_File'].' ">
-                			<input type="hidden" id="sName" name="sName" value='.$epinfo2['series']['series'].'>  
-                			<input type="hidden" id="seriesID" name="seriesID" value='.$epinfo2['series']['showID'].'> 
-                 			<input type="hidden" id="lang" name="lang" value='.$lang.'>
-                 			<input type="hidden" id="res" name="res[]" value='.$rez.'><br>
-							<b>Guessed Season Number: </b><input name="sNo[]" type="text" value="'.$cSno.'" size="2" maxlength="2"><br>
-							<b>Guessed Episode:       </b><input name="epNo[]" type="text" value="'.$guessedArray['ep'][0].'" size="2" maxlength="2"><br> </p>
-							</div></div>';			
-					$fileCount++;
+			width: 80%;
+			margin: 0 auto;
 			}
-				
-				$out.='</div></div></td></tr></table>
-				<input type="hidden" name="batchFiles" value="'.$arrayFiles.'"> <input type="hidden" name="section" value="tvdbBatchResult"></form>';    		  
-				$output->setReloadLeftFrame(false);
-				$output->setMenuTitle('File List ||');
-				$output->setPageTitle('Confirm Selection');
-				$output->setScriptInHead($scriptInHead);	
-				$output->setScriptInBody('bgColor="#F0F3F8" onLoad="$(\'f_in\').appear(); return false;"');
-				$output->setBody($out);
-				$output->setTitle(APPLICATION_NAME);			
-				$output->output();
-				//$batchArray; 
-				//print_r($arrayFiles);
-};
-
-function tvdbBatchResult ($output,$mediadbADO,$dbADO)
-{	
-	include(APPROOT.'/languages/'.$GLOBALS['lang'].'/common.lang.php');
-	include(APPROOT.'/languages/'.$GLOBALS['lang'].'/editMediaFile.lang.php');
-	$pass=""; $user="root"; $db="pluto_media"; $con= mysql_connect("localhost", $user, $pass) or die(mysql_error()); 	 // connection 
-	if (!$con) { die('Could not Connect'.mysql_error()); //error messaging
-	$connMessage="Fail";
-	};
-	if ($con) {mysql_select_db("pluto_media") or die(mysql_error()); //connect to media db or error out
-	$connMessage="Conn Good"; 	}; 	
-	
-	$batchArray= array();
-	$i = 0;
-	$updateCount = count($_POST['file']);	
-	//add data to folder
-	while ($i < $updateCount) {		
-	$batchArray[$_POST['file'][$i]] = array('seriesID'=>$_POST['seriesID'], 'episodeNo'=>$_POST['epNo'][$i], 'seasonNo'=>$_POST['sNo'][$i], 'rez'=>$_POST['rezOver'][$i] ); 
-	$i++;
-	}
-		
-	$out.='<table width="%85" align="center"><td>';	
-	foreach ($batchArray as $key =>$val)
-	{ 
-	$out.='<tr><td>';
-	
-	$fileIdent = $key;
-	
-	$out.='<td bg="#ffffff">Starting Process for file: '.$fileIdent.'<br></td></tr><td>';	
-	$fileID=$fileIdent;
-	$seasonNo = $val['seasonNo'];
-	$episodeNo = $val['episodeNo'];
-	if (isset($_POST['override']))
-	{$rez=$_POST['override'];}
-	else
-	{$rez = $val['rez'];}
-	//echo $seasonNo.$episodeNo;
-	$out.= $fileIdent.' -Season No- '.$seasonNo.' -Episode No- '.$episodeNo.' -Resolution-'.$rez;
-	$sID = $val['seriesID'];
-	$xmlPath='/var/tmp';
-	//echo 'series data quest';
-	unlink('coverartscan/batchImg'.$showID.$seasonNo.'.jpg');
-	$episodeData = getSeriesData($sID, $lang, $xmlPath, $mediadbADO, $dbADO, $output, $fileID, $seasonNo, $episodeNo);  
-	
-//begin ugly code======================================================
-
-$attributeType=Array();												//dynamic array to deal with changes to attribute types
-$query = "SELECT PK_AttributeType, Description from AttributeType";
-$result = mysql_query($query);
-
-while ($row=mysql_fetch_array($result)) {
-        $attributeType[$row['PK_AttributeType']]=$row['Description'];
-}
-
-$row=mysql_fetch_array($result);
-for ($i = 0; $i < count($row); $i++) {
-        $attributeType[$row['PK_AttributeType']]=$row['Description'];
-}
-
-$mediaSubTypeEnum = array (1 => "TV Shows",2 => "Movies",3 => "Home Videos", 4 => "Sports Events", 5 => "Music Videos", 6 => "Alternative", 7 => "Popular Music", 8 => "Classical Music");
-$fileFormatEnum = array (1 => "Low Res",2 => "DVD",3 => "Standard Def", 4 => "HD 720", 5 => "HD 1080", 6 => "Low Quality", 7 => "MP3", 8 => "CD Quality", 9 => "High-def audio");
-//$attributeType = array (1=>"Director", 2=>"Performer", 8=>"Genre", 10=>"Channel", 11=>"Episode", 12=>"Program", 13=>"Title", 14=>"Disc ID", 16=>"Composer/Writer", 17=>"Studio", 18=>"Rating", 19=>"Release Date", 21=>"Chapter", 26=>"Rated", 31=>"Format", 32=>"Region", 33=>"Language", 34=>"Aspect Ratio", 36=>"IMDB", 37=>"Synopsis", 38=>"Producer", 39=>"Executive Producer", 41=>"TV Channel ID", 42=>"TV Program ID", 43=>"TV Series ID" );
-$aTypeProper= array_flip($attributeType);
-$directors = explode("|", $episodeData['director']);
-$seriesActors = explode("|", $episodeData['series']['seriesactors']);
-$genreArr = explode("|", $episodeData['series']['genre']);
-//print_r($episodeData);
-if (strpos($episodeData['guestStars'], ','))
-{
-$procGuestActors = explode(",", $episodeData['guestStars']);
-}
-else
-{
-$guestStars = explode("|", $episodeData['guestStars']);
-foreach($guestStars as $val =>$key)
-{ if (!(preg_match('/[a-z0-9]/', $key))) {unset($guestStars[$val]); } };
-$procGuestActors = array_values($guestStars);
-}
-foreach($directors as $val =>$key)
-{ if (!(preg_match('/[a-z0-9]/', $key))) {unset($directors[$val]); } };
-$directorArray = array_values($directors);
-
-foreach($seriesActors as $val =>$key)
-{ if (!(preg_match('/[a-z0-9]/', $key))) {unset($seriesActors[$val]); } };
-$procSeriesActors = array_values($seriesActors);
-$actorArray = array_merge($procSeriesActors, $procGuestActors);
-
-foreach($genreArr as $val =>$key)
-{ if (!(preg_match('/[a-z0-9]/', $key))) {unset($genreArr[$val]); } };
-$genreArray = array_values($genreArr);
-
-
-//subtypes==========================================================================
-	if ($_POST['rezMaster'] !="")
-	{
-	$rez = $_POST['rezMaster'];
-	}
-	
-	$out.="<br><b>Starting Subtypes<br>";
-	mysql_query("UPDATE File SET FK_MediaSubType=1  WHERE `PK_File`=\"$fileIdent\" ")or die (mysql_error());
-	$out.="Tv Shows - Set<br>";
-	mysql_query("UPDATE File SET FK_FileFormat=\"$rez\" WHERE `PK_File`=\"$fileIdent\" ")or die (mysql_error());
-	$out.= $fileFormatEnum[$rez].' Set<br>';
-	$out.="<b>End Subtypes</b><br>";
-	
-//=========================series title, mapped to Program===========================================		
-	$program=mysql_real_escape_string($episodeData['series']['series']);
-        $sql = "SELECT * FROM `Attribute` WHERE `Name` =\"$program\" AND FK_AttributeType = 12";
-	$result = mysql_query($sql);		 
-	$row = mysql_fetch_assoc($result);	
-	$attrib = $row['PK_Attribute'];		
-	$count = mysql_num_rows($result);
-	$attrib = $row['PK_Attribute'];
-//	$fileIdent = $_POST['fileID'];
-	if ($count < 1)
-	{		$out.= 'Series title not found...' ;	
-                        $iQuery = "INSERT INTO Attribute VALUES (\"\" , 12 , \"$program\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )" ;
-			mysql_query($iQuery) or die (mysql_error());	
-			$insertRes= (int)mysql_insert_id()  or die (mysql_error());
-			//echo $insertRes;
-			$idQuery="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$insertRes\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-			 mysql_query($idQuery)  or die (mysql_error());
-	}
-	else
-	{$out.= 'Series title in database, associating .....<br>' ;
-	$fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= $attrib AND FK_File = $fileIdent";
-	$chkResult = mysql_query($fileChk) or die (mysql_error()); $chkCount = mysql_num_rows($chkResult); $chk = mysql_fetch_assoc($chkResult); 
-	if ($chkCount < 1)
-	{		$out.='...Inserting Series title: <b>'.$program.'</b> into '.$fileID ;
-		$idQuery2="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-	mysql_query($idQuery2)  or die (mysql_error());
-	} 
-	};$out.='Series title <b>'.$program.'</b> complete. <br>';
-
-	//====================================actors=======================================
-$ATotal = count($actorArray);
-	//print_r($directorArray);
-	//echo '<b>Total Attributes: </b>'.$dTotal.'<br>' ; 
-	$i=0;
-	$attribType = 2;
-	while ($i < $ATotal)
-	{	
-	$content=mysql_real_escape_string($actorArray[$i]);
-	$sql = "SELECT * FROM `Attribute` WHERE `Name` =\"$content\" AND FK_AttributeType = $attribType"; 
-	$result = mysql_query($sql);
-	$count = mysql_num_rows($result);	 
-	$row = mysql_fetch_assoc($result);
-	//print_r($row);	
-	$attrib = $row['PK_Attribute'];
-	if ($count < 1)
-	{			
-			$iQuery = "INSERT INTO Attribute VALUES (\"\" , $attribType , \"$content\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )" ;  	
-			mysql_query($iQuery) or die (mysql_error());	
-			$insertRes= (int)mysql_insert_id()  or die (mysql_error());
-			//echo $insertRes;
-			$idQuery="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$insertRes\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-			mysql_query($idQuery)  or die (mysql_error());
-	}
-	else
-	{
-	//echo $content.' in database...<br>'; echo $attrib;
-	
-	$fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= $attrib AND FK_File=$fileIdent" ;
-	$chkResult = mysql_query($fileChk) or die (mysql_error()); $chkCount = mysql_num_rows($chkResult); $chk = mysql_fetch_assoc($chkResult); 
-	if ( $chkCount < 1)
-	{		
-		$idQuery2="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-		mysql_query($idQuery2)  or die (mysql_error());
-	} 
-	};
-	$i++;} $out.='<b>Actor success</b><br></td></tr><td>';
-//==============================eptitle mapped to episode field==================================================================
-	$epTitle=mysql_real_escape_string($episodeData['title']);
-	$sql = "SELECT * FROM `Attribute` WHERE `Name` =\"$epTitle\" AND FK_AttributeType = 11"; //test to see if its in the db already
-	$result = mysql_query($sql);
-	$count = mysql_num_rows($result);	 
-	$row = mysql_fetch_assoc($result);	
-	$attrib = $row['PK_Attribute'];
-	
-	if ($count < 1)
-	{
-	$out.= 'Episode title not found...' ;
-			$iQuery = "INSERT INTO Attribute VALUES (\"\" , 11 , \"$epTitle\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )" ;  	
-			mysql_query($iQuery) or die (mysql_error());	
-			$insertRes= (int)mysql_insert_id()  or die (mysql_error());
-			//echo $insertRes;
-			$idQuery="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$insertRes\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-			 mysql_query($idQuery)  or die (mysql_error());
-	}
-	else
-	{$out.= 'Episode title in database, associating .....<br>' ;
-	$fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= $attrib AND FK_File = $fileIdent";
-	$chkResult = mysql_query($fileChk) or die (mysql_error()); $chkCount = mysql_num_rows($chkResult); $chk = mysql_fetch_assoc($chkResult); 
-	if ($chkCount < 1)
-	{		
-		$out.='Inserting episode title: '.$epTitle.' into '.$fileID ;
-		$idQuery2="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-	mysql_query($idQuery2)  or die (mysql_error());
-	} else
-	{ $out.='Episode Title: <b>'.$epTitle.'</b> already in ep, skipping <br>';}
-	};$out.='Episode: '.$epTitle.' Complete<br></tr></td><tr><td>';
-//===================================================================================director
-	$dTotal = count($directorArray);
-	//print_r($directorArray);
-	//echo '<b>Total Attributes: </b>'.$dTotal.'<br>' ; 
-	$i=0;
-	$attribType = 1;
-	while ($i < $dTotal)
-	{	
-	$content=mysql_real_escape_string($directorArray[$i]);
-	$sql = "SELECT * FROM `Attribute` WHERE `Name` =\"$content\" AND FK_AttributeType = $attribType"; 
-	$result = mysql_query($sql);
-	$count = mysql_num_rows($result);	 
-	$row = mysql_fetch_assoc($result);
-	//print_r($row);	
-	$attrib = $row['PK_Attribute'];
-	if ($count < 1)
-	{			$out.= 'Director(s) not in db---------inserting' ;
-			$iQuery = "INSERT INTO Attribute VALUES (\"\" , $attribType , \"$content\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )" ;  	
-			mysql_query($iQuery) or die (mysql_error());	
-			$insertRes= (int)mysql_insert_id()  or die (mysql_error());
-			//echo $insertRes;
-			$idQuery="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$insertRes\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-			mysql_query($idQuery)  or die (mysql_error());
-	}
-	else
-	{
-	
-	$fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= $attrib AND FK_File=$fileIdent" ;
-	$chkResult = mysql_query($fileChk) or die (mysql_error()); $chkCount = mysql_num_rows($chkResult); $chk = mysql_fetch_assoc($chkResult); 
-	if ( $chkCount < 1)
-	{		
-		$idQuery2="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-		mysql_query($idQuery2)  or die (mysql_error());
-	} else
-	{ 
-	}	
-	};
-	$i++;}$out.='Director Complete<br></td></tr><tr><td>';	
-
-	//=========================================epidsode img=====================================
-unlink('coverartscan/batchImg'.$showID.$episodeNo.'.jpg');
-$test=mysql_query("SELECT * FROM Picture_File WHERE FK_File=\"$fileIdent\" ") or die (mysql_error());
-$fileCount = mysql_num_rows($test); 
-//echo $fileCount; 
-if ($fileCount < 1)
-{ $out.= 'No episode picture, adding' ;
-$fullUrl ='http://www.thetvdb.com/banners/'.$episodeData['epImg'];
-$img = file_get_contents($fullUrl);
-$fName1 = strrchr($episodeData['epImg'], '/');
-$fName = str_replace (".jpg", "", $fName1);
-$savefile = fopen(APPROOT.'operations/mediaBrowser/tvDBxml/'.$fName.'.jpg', 'w');
-fwrite($savefile, $fullUrl);
-fclose($savefile);
-$import_cover_art='http://www.thetvdb.com/banners/'.$episodeData['epImg'];
-$extension=strtolower(str_replace('.','',strrchr($import_cover_art,".")));	
-
-	if($import_cover_art!=''){
-		mysql_query("INSERT INTO Picture (Extension,URL) VALUES (\"$extension\", \"$import_cover_art\")");
-		$picID=(int)mysql_insert_id()  or die (mysql_error());
-		mysql_query("INSERT INTO Picture_File (FK_Picture,FK_File) VALUES (\"$picID\",\"$fileIdent\")");
-
-		// create the file and the thumbnail
-		$extension=($extension=='jpeg')?'jpg':$extension;
-		$newPicName=$picID.'.'.$extension;
+			#containerHeader{
 			
-			$error='';
-			if($extension!='jpg'){
-				$error=$TEXT_ERROR_NOT_JPEG_CONST;
 			}
-			else{
-				// create thumbnail
-				savePic($import_cover_art,$GLOBALS['mediaPicsPath'].$newPicName);
-				if(file_exists($GLOBALS['mediaPicsPath'].$newPicName)){
-					// try to delete exisitng thumbnail if user messed the files and database
-					if(file_exists($GLOBALS['mediaPicsPath'].$picID.'_tn.'.$extension)){
-						$cmd='sudo -u root rm -f "'.$GLOBALS['mediaPicsPath'].$picID.'_tn.'.$extension.'"';
-						exec_batch_command($cmd);
+			.tableContainer{
+			
+			}			
+	
+  </style>';
+
+$out.='<hr>
+<form action="" method="post">';
+
+// SCAN FOR TV SHOWS
+if ($_POST['action']=='scan')
+{
+	// Start the scan
+
+		//load attribute names
+		$mediaTypeSQL = "SELECT PK_MediaType, Description FROM MediaType WHERE PK_MediaType = 2"; 
+		$res1=$mediadbADO->Execute($mediaTypeSQL);
+		$rowMEDIATYPE=$res1->FetchRow();
+		$TVMediaTypeID = $rowMEDIATYPE['PK_MediaType'];
+		$querySeries = "SELECT FileFormat.Description AS FF,FK_FileFormat, FK_MediaType,
+		FK_MediaSubType, File.PK_File, Filename, Path, File.DateAdded, File.File_Size, File.Missing 
+		FROM File 
+		LEFT JOIN FileFormat ON FileFormat.PK_FileFormat=File.FK_FileFormat 
+		WHERE File.EK_MediaType=2 AND File.MimeType='video/mpeg'  order by Filename LIMIT 100"; 
+		
+		$array = array();
+		$resSeries=$mediadbADO->Execute($querySeries); //get files from Database, replace with array of values
+		$numFilesInDb = $resSeries->RecordCount();
+
+		if($numFilesInDb == 0) //See if files exists in DB
+		{
+		$out.='<hr><p class="form"><strong>No Results:</strong> Tv Shows to update.  Import files first</p>';
+		}
+		else
+		{
+		$out.='<div id="containerHeader">
+		<h3>TV Shows in Database: '.$numFilesInDb.' files found</h3>
+		</div>	
+		<div id="container">';
+		$out.='<hr><p><strong>Instructions:</strong> <br>1: Use to Search box to search for your show <br>2: Select Show from the search results<br>3: Choose season and episode<br>3: Press "Batch Submit" to add metadata to database.<br>
+		
+		<form action="index.php" method="post" name="tvdbsettings">
+		<input type="hidden" name="section" value="tvdbbatch">
+		<input type="hidden" name="action" value="settings">
+		</form>
+		
+		<form action="index.php" method="post" name="tvdbBatch">
+		<input type="hidden" name="section" value="tvdbbatch">
+		<input type="hidden" name="action" value="update">
+			<table width="100%">
+			<tr>
+				<td>TVDB.com Series Name:</td><td><input readonly type="text" name="tvdbName" id="tvdbName" value="" size="50"></td>
+			</tr>
+			<tr>
+				<td>TVDB.com SeriesID:</td><td><input readonly type="text" name="seriesID" id="seriesID" value="" size="10">
+			</tr>
+			<tr>
+				<td>Search:</td><td><input type="text" id="seriesSearch" name="seriesSearch" size="50">
+				<input type="button" value="Search Series" onclick="getSeries();"></td>
+			</tr>
+			<tr>
+				<td>Language:</td><td>
+					<select name="lang">
+						<option value="en">English</option>
+						<option value="de">Deutsch</option>
+						<option value="fr">Français</option>
+						<option value="se">Swedish</option>
+						<option value="nl">Nederlands</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td></td><td><br>
+					<input type="button" value="Batch Submit" onclick="javascript:document.tvdbBatch.submit();">
+				</td>
+			</tr>
+			</table>
+			<div id="seriesResults"></div>
+			<hr>
+			<div id="fileResults">
+			<table id="files" style="width: 100%;">
+			<tr>
+				<th>Filename</th>
+				<th>Season No</th>
+				<th>Episode No</th>
+				<th>Resolution</th>
+			</tr>';
+			
+			while($rowSeries=$resSeries->FetchRow())
+			{	
+			$f= $rowSeries['PK_File'];
+			$name = $rowSeries['Filename'];
+			$res = $rowSeries['FF'];
+			if ($res=='') $res='Unknown';
+			$out.= '
+			<tr>
+				<td>'.$name.' <input type="hidden" name="file[]" id="file_'.$f.'" value="'.$f.'"></td>
+				<td><input type="text" name="sNo[]" id="sNo_'.$f.'" value="" size="2"></td>
+				<td><input type="text" name="epNo[]" id="epNo_'.$f.'" value="" size="2"></td>
+				<td>'.$res.'<input type="hidden" name="rezOver[]" id="rezOver_'.$f.'" value="'.$rowSeries['FK_FileFormat'].'"></td>
+			</tr>
+			';
+			}
+			
+			$out.='</table></div>';
+			
+			$out.='</div></form>
+						
+		<script type="text/javascript">
+		function getSeries(){
+				var s = document.getElementById("seriesSearch").value;
+				new Ajax.Request("operations/mediaBrowser/tvdbSearch.php?s="+s, {
+						method:"get",
+						onComplete: function(transport){
+							document.getElementById("seriesResults").innerHTML = transport.responseText;
 					}
-					 unlink(APPROOT.'operations/mediaBrowser/tvDBxml/'.$fName.'.jpg');	
-					$resizeFlag=resizeImage($GLOBALS['mediaPicsPath'].$newPicName, $GLOBALS['mediaPicsPath'].$picID.'_tn.'.$extension, 256, 256);
-					if(!$resizeFlag){
-						$error=$TEXT_ERROR_UPLOAD_FAILS_PERMISIONS_CONST.' '.$GLOBALS['mediaPicsPath'];
+				});
+		}
+		function getShow(sid, sname){
+			var n = document.getElementById("tvdbName");
+			n.value = sname;
+			var id = document.getElementById("seriesID");
+			id.value = sid;
+		}
+		</script>';
+		}
+	
+}
+// UPDATE TV SHOWS
+elseif ($_POST['action']=='update')
+{
+		include(APPROOT.'/languages/'.$GLOBALS['lang'].'/common.lang.php');
+		include(APPROOT.'/languages/'.$GLOBALS['lang'].'/editMediaFile.lang.php');
+		$pass=""; $user="root"; $db="pluto_media"; 
+		$con = mysqli_connect("localhost", $user, $pass, $db) or die(mysqli_error($con)); 	 // connection 
+		if (!$con) { 
+			die('Could not Connect' . mysqli_error($con)); //error messaging
+			$connMessage="Fail";
+		}
+		$connMessage="Conn Good"; 	
+		
+		$batchArray= array();
+		$i = 0;
+		$updateCount = count($_POST['file']);	
+		//add data to folder
+		while ($i < $updateCount) {		
+		$batchArray[$_POST['file'][$i]] = array('seriesID'=>$_POST['seriesID'], 'episodeNo'=>$_POST['epNo'][$i], 'seasonNo'=>$_POST['sNo'][$i], 'rez'=>$_POST['rezOver'][$i] ); 
+		$i++;
+		}
+			
+		$out.='<table width="%85" align="center"><td>';	
+		foreach ($batchArray as $key =>$val)
+		{
+		//check if season and episode exists
+		if(strcmp($val['seasonNo'], '')!== 0 && strcmp($val['episodeNo'], '')!== 0)
+		{
+		$fileIdent = $key;
+		
+		//check for series ID
+		$sIdent = $val['seriesID']; 
+		$seaIdent = $val['seasonNo'];
+		$epIdent = $val['episodeNo'];
+		$rez = $val['rez'];
+		
+		$out.='<h2>Starting to process TV Show</h2>';
+		
+		//try to determine file name from FileId
+		$query= "SELECT Filename FROM File WHERE PK_File='$fileIdent'";		
+		$result = mysqli_query($con, $query) or die(mysqli_error($con));
+		$out.='<hr><h3>Filename:</h3>';
+		while ($row=mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+		$out.=$row['Filename'];
+		}
+		$out.='<h3>PK_File ID: </h3>'.$fileIdent;
+		$result = mysqli_query($con, $query) or die(mysqli_error($con));
+		$row=mysqli_fetch_array($result, MYSQLI_ASSOC);
+		
+		$seriesData=array(); 
+		$episodeData=array();
+		
+		//check file system for tvdbxml
+		//download series data to file (only if not exists
+		$now = date("Y-m-d", mktime(0, 0, 0, date("m")  , date("d"), date("Y"))); 
+		$apiKey = "4C6CEBDFB4558279" ;
+
+		$xmlPath ='/operations/mediaBrowser/tvDBxml';
+		if (!is_dir($xmlPath)) {
+			$out.='<div>Dir '.$xmlPath.' does not exist, creating...</div>';
+			$dirPath = APPROOT.$xmlPath;
+			mkdir($dirPath, 0777);
+		}
+		
+		$dlPath = APPROOT.$xmlPath.'/'.$sIdent;
+		if (!is_dir($dlPath)) {
+			$out.='<div>Dir '.$dlPath.' does not exist, creating...</div>';
+			mkdir($dlPath, 0777);
+		}
+		
+		$out.='<h3>TVDB Data Path: </h3>'.$dlPath;
+		
+		// tvdb data is cached, so check if cache is more than 24hours old
+		$cacheTime = 0;
+		$cacheFilename = $dlPath."/".$sIdent.".".$_POST['lang'].".xml";
+		if (file_exists($cacheFilename)) {
+			$cacheTime = time() - filemtime($cacheFilename);
+		}
+		
+		// check time
+		if (file_exists($cacheFilename) && $cacheTime < 86400) {
+			// file is valid
+			$out.='<div>Using cached version of '.$cacheFilename.'</div>';
+			$xmlDoc = simplexml_load_file($cacheFilename);
+			$out.='<div>Loaded cached XML document</div>';
+		}
+		else {
+			// expired or doesn't exist
+			$out.='<div>Downloading tvdb xml file</div>';
+			$dataUrl = 'http://www.thetvdb.com/api/'.$apiKey.'/series/'.$sIdent.'/all/'.$_POST['lang'].'.xml';
+			// download to file
+			$dataFile = dowloadUrlToFile($dataUrl, $cacheFilename);
+			
+			$out.='<div>Series XML downloaded to: '.$cacheFilename.'</div>';
+			$xmlDoc = simplexml_load_file($cacheFilename);
+			$out.='<div>Loaded downloaded XML document</div>';
+		}
+		
+		$episodeData = episodeInfo($xmlDoc, $seaIdent, $epIdent);
+		
+		//update file type to tv episode
+		$out.='<div>Updating file type to TV Episode</div>';
+		
+		// Update the Episode Type
+		mysqli_query($con, "UPDATE File SET FK_MediaSubType=1  WHERE `PK_File`=\"$fileIdent\" ") or die (mysqli_error($con));
+		// Update the Resolution
+		mysqli_query($con, "UPDATE File SET FK_FileFormat=\"$rez\" WHERE `PK_File`=\"$fileIdent\" ") or die (mysqli_error($con));
+		
+		// Handle Series info, Add series  Series, Program 
+		$out.='<div>Adding Series info: '.$episodeData['series']['series'].'</div>';
+		$program = mysqli_real_escape_string($con, $episodeData['series']['series']);
+		$sql = "SELECT PK_Attribute, Name FROM Attribute WHERE Name=\"$program\" AND FK_AttributeType=42";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Adding series to Database</div>';
+			// insert it 
+			$sql = "INSERT INTO Attribute (FK_AttributeType, Name) VALUES (42, \"$program\")";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			$series_id = mysqli_insert_id($con);
+			$out.='<div>Series id: '.$series_id.'</div>';
+		}
+		else {
+			$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+			$series_id = $row['PK_Attribute'];
+			$out.='<div>Found existing series, id: '.$series_id.'</div>';
+		}
+			
+		// Link Series with TV Show
+		$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$series_id AND FK_File=$fileIdent";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Linking series with TV show.</div>';
+			// insert it 
+			$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $series_id, 0, 0)";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		}
+		else {
+			$out.='<div>Series already linked with TV show.</div>';
+		}
+			
+		// Update channel
+		$out.='<div>Adding channel info to TV show.</div>';
+		$channel = mysqli_real_escape_string($con, $episodeData['series']['network']);
+		$sql = "SELECT PK_Attribute, Name FROM Attribute WHERE Name=\"$channel\" AND FK_AttributeType=10";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Adding channel to Database</div>';
+			// insert it 
+			$sql = "INSERT INTO Attribute (FK_AttributeType, Name) VALUES (10, \"$channel\")";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			$channel_id = mysqli_insert_id($con);
+			$out.='<div>Channel id: '.$channel_id.'</div>';
+		}
+		else {
+			$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+			$channel_id = $row['PK_Attribute'];
+			$out.='<div>Found existing channel, id: '.$channel_id.'</div>';
+		}	
+			
+		// Link Channel with TV Show
+		$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$channel_id AND FK_File=$fileIdent";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Linking channel with TV show.</div>';
+			// insert it 
+			$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $channel_id, 0, 0)";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			}
+		else {
+			$out.='<div>Channel already linked with TV show.</div>';
+		}
+		
+		// Update first aired
+		$out.='<div>Adding first aired info to TV show.</div>';
+		if (isset($episodeData['first_aired']) && $episodeData['first_aired'] != '') {
+			$first_aired = mysqli_real_escape_string($con, $episodeData['first_aired']);
+			$sql = "SELECT PK_Attribute, Name, Class FROM Attribute WHERE Class=\"$first_aired\" AND FK_AttributeType=41";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				$out.='<div>Adding first_aired to Database</div>';
+				// insert it 
+				$sql = "INSERT INTO Attribute (FK_AttributeType, Name, Class) VALUES (41, 'First Aired', \"$first_aired\")";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+				$first_aired_id = mysqli_insert_id($con);
+				$out.='<div>First Aired id: '.$first_aired_id.'</div>';
+			}
+			else {
+				$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+				$first_aired_id = $row['PK_Attribute'];
+				$out.='<div>Found existing firstaired, id: '.$first_aired_id.'</div>';
+			}
+				
+			// Link First Aired with TV Show
+			$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$first_aired_id AND FK_File=$fileIdent";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				$out.='<div>Linking first_aired with TV show.</div>';
+				// insert it 
+				$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $first_aired_id, 0, 0)";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			}
+			else {
+				$out.='<div>First_aired already linked with TV show.</div>';
+			}
+		}
+		
+		// Update Director 
+		$out.='<div>Adding director info to TV show.</div>';
+		if (isset($episodeData['director']) && $episodeData['director'] != '') {
+			$director = mysqli_real_escape_string($con, $episodeData['director']);
+			$sql = "SELECT PK_Attribute, Name FROM Attribute WHERE Name=\"$director\" AND FK_AttributeType=5";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				$out.='<div>Adding director to Database</div>';
+				// insert it 
+				$sql = "INSERT INTO Attribute (FK_AttributeType, Name) VALUES (5, \"$director\")";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+				$director_id = mysqli_insert_id($con);
+				$out.='<div>Director id: '.$director_id.'</div>';
+			}
+			else {
+				$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+				$director_id = $row['PK_Attribute'];
+				$out.='<div>Found existing director, id: '.$director_id.'</div>';
+			}	
+			
+			// Link Director with TV Show
+			$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$director_id AND FK_File=$fileIdent";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				$out.='<div>Linking director with TV show.</div>';
+				// insert it 
+				$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $director_id, 0, 0)";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			}
+			else {
+				$out.='<div>Director already linked with TV show.</div>';
+			}
+		}
+		
+		
+		// Update Actors
+		$out.='<div>Adding Actor info to TV show.</div>';
+		if (isset($episodeData['series']['actors']) && count($episodeData['series']['actors'] > 0)) {
+			foreach ($episodeData['series']['actors'] as $actor_info) {
+				$out.='<div>Adding actor: '.$actor_info['name'].'</div>';
+				$actor = mysqli_real_escape_string($con, $actor_info['name']);
+				$sql = "SELECT PK_Attribute, Name FROM Attribute WHERE Name=\"$actor\" AND FK_AttributeType=6";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+				if (mysqli_num_rows($result)==0) {
+					$out.='<div>Adding actor to Database</div>';
+					// insert it 
+					$sql = "INSERT INTO Attribute (FK_AttributeType, Name) VALUES (6, \"$actor\")";
+					$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+					$actor_id = mysqli_insert_id($con);
+					$out.='<div>Actor id: '.$actor_id.'</div>';
+				}
+				else {
+					$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+					$actor_id = $row['PK_Attribute'];
+					$out.='<div>Found existing actor, id: '.$actor_id.'</div>';
+				}
+					
+				// check if actor has image
+				if ($actor_info['image'] != '') {
+					// grab actor image, store it
+					$actorImage = $actor_info['image'];
+					
+					$out.='<div>Actor Image: '.$actorImage.'</div>';
+					
+					// check if we have image for actor already
+					$sql = "SELECT PK_Picture FROM Picture_Attribute WHERE FK_Attribute=$actor_id";
+					$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+					if (mysqli_num_rows($result)==0) {
+						// save the image
+						$actorImageURL = "http://www.thetvdb.com/banners/".$actorImage;
+						$fileName = rand(1000,20000).rand(1000,20000).".jpg";
+						
+						// Download
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $actorImageURL);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+						curl_setopt($ch, CURLOPT_TIMEOUT, 200);
+						curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 200);
+						$rawdata = curl_exec($ch);
+						curl_close($ch);
+						$file = APPROOT."mediapics/".$fileName;
+						$sfile = APPROOT."mediapics/".$fileName."_tn.jpg";
+						file_put_contents($file, $rawdata);
+						
+						// Create thumb
+						exec("/usr/local/bin/convert " . $file . " -resize x100 " . $sfile);
+						
+						// create db entry for image
+						$sql = "INSERT INTO Picture (FK_PictureType, Extension, URL) VALUES (1, 'jpg', '')";
+						mysqli_query($con, $sql) or die(mysqli_error($con));
+						$picture_id = mysqli_insert_id($con);
+						
+						// rename file to picture id
+						rename($file, APPROOT."mediapics/".$picture_id.".jpg");
+						rename($sfile, APPROOT."mediapics/".$picture_id."_tn.jpg");
+						
+						// Link Actor and Picture
+						$sql = "INSERT INTO Picture_Attribute (FK_Picture, FK_Attribute) VALUES ($picture_id, $actor_id)";
+						mysqli_query($con, $sql) or die(mysqli_error($con));
+					
 					}
 				}
-			}		
-	}
-}else
-{ $out.= 'Episode has image, skipping'; }; $out.='Image Complete<br></td></tr><tr><td>';
-//==========================================genre===========================================================================
-
-	$gTotal = count($genreArray);	
-	$i=0;
-	$attribType = 8;	
-	while ($i < $gTotal)
-	{	
-	$content=mysql_real_escape_string($genreArray[$i]);
-	$sql = "SELECT * FROM `Attribute` WHERE `Name` =\"$content\" AND FK_AttributeType = $attribType"; 
-	$result = mysql_query($sql);
-	$count = mysql_num_rows($result);	 
-	$row = mysql_fetch_assoc($result);	
-	$attrib = $row['PK_Attribute'];		
-	if ($count < 1)
-	{
-			$iQuery = "INSERT INTO Attribute VALUES (\"\" , $attribType , \"$content\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )" ;  	
-			mysql_query($iQuery) or die (mysql_error());	
-			$insertRes= (int)mysql_insert_id()  or die (mysql_error());
-			//echo $insertRes;
-			$idQuery="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$insertRes\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-			mysql_query($idQuery)  or die (mysql_error());
+				
+				// Link Actor with TV Show
+				$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$actor_id AND FK_File=$fileIdent";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+				if (mysqli_num_rows($result)==0) {
+					$out.='<div>Linking actor with TV show.</div>';
+					// insert it 
+					$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $actor_id, 0, 0)";
+					$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+				}
+				else {
+					$out.='<div>Actor already linked with TV show.</div>';
+				}
+			}
 		}
-	else
-	{
-	
-	$fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= $attrib AND FK_File=$fileIdent" ;
-	$chkResult = mysql_query($fileChk) or die (mysql_error()); $chkCount = mysql_num_rows($chkResult); $chk = mysql_fetch_assoc($chkResult); 
-	if ( $chkCount < 1)
-	{	
-		$idQuery2="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-		mysql_query($idQuery2)  or die (mysql_error());
-	} 
-	}; $out.='Genre Added <br></td></tr><tr><td>';
-	$i++;}
-
-//==============================eptitle mapped to title==================================================================
-        $epTitle=mysql_real_escape_string($episodeData['title']);
-        $sql = "SELECT * FROM `Attribute` WHERE `Name` =\"$epTitle\" AND FK_AttributeType = 13"; //test to see if its in the db already
-        $result = mysql_query($sql);
-        $count = mysql_num_rows($result);
-        $row = mysql_fetch_assoc($result);
-        $attrib = $row['PK_Attribute'];
-
-        if ($count < 1)
-        {
-        $out.= 'Episode title not found...' ;
-                        $iQuery = "INSERT INTO Attribute VALUES (\"\" , 13 , \"$epTitle\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )" ;
-                        mysql_query($iQuery) or die (mysql_error());
-                        $insertRes= (int)mysql_insert_id()  or die (mysql_error());
-                        //echo $insertRes;
-                        $idQuery="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$insertRes\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-                         mysql_query($idQuery)  or die (mysql_error());
-        }
-        else
-        {$out.= 'Episode title in database, associating .....<br>' ;
-        $fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= $attrib AND FK_File = $fileIdent";
-        $chkResult = mysql_query($fileChk) or die (mysql_error()); $chkCount = mysql_num_rows($chkResult); $chk = mysql_fetch_assoc($chkResult);
-        if ($chkCount < 1)
-        {
-                $out.='Inserting episode title: '.$epTitle.' into '.$fileID ;
-                $idQuery2="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-        mysql_query($idQuery2)  or die (mysql_error());
-        } else
-        { $out.='Episode Title: <b>'.$epTitle.'</b> already in ep, skipping <br>';}
-        };$out.='Episode: '.$epTitle.' Complete<br></tr></td><tr><td>';
-
-//=================ids================================================================================
-      //	print_r($episodeData);
-	$idArray = array( array('TV Season ID'=>$episodeData['seasonID']), array('TV Series ID'=>$episodeData['seriesID']), array( 'TV Program ID'=>$episodeData['epid']), array("Release Date" =>$episodeData['firstAir']), array("Episode Number" =>$episodeData['air_epNo']), array("Season Number" =>$episodeData['seasonNo']) );
- 	$counter = count($idArray);
- //	echo $counter;	
- 	$i=0;
- 	$flip = array_flip($attributeType);
-	$fileIdent = $fileID;
-while ($i < $counter)
-	{
-	$item = $idArray[$i];
-	$attribType = $flip[key($idArray[$i])];
-	$content1 = array_values($idArray[$i]);
-	$content = $content1[0];
-$out.="$content1";
-	$sql = "SELECT * FROM `Attribute` WHERE `Name` = \"$content\" AND FK_AttributeType = \"$attribType\" ";
-	
-	$result = mysql_query($sql) or die (mysql_error($content));
-	$count = mysql_num_rows($result);
-	$row = mysql_fetch_assoc($result);
-	$attrib = $row['PK_Attribute'];
-	if ($count < 1)
-	{
-			$iQuery = "INSERT INTO Attribute VALUES (\"\" , $attribType , \"$content\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )" ;
-			mysql_query($iQuery) or die (mysql_error());
-			$insertRes= (int)mysql_insert_id()  or die (mysql_error());
-			//echo $insertRes;
-			$idQuery="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"'.$insertRes.'\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-			mysql_query($idQuery)  or die (mysql_error());
+			
+		// Update Title (episode name)
+		$out.='<div>Adding Title info to TV show.</div>';
+		$title = mysqli_real_escape_string($con, $episodeData['episodename']);
+		$sql = "SELECT PK_Attribute, Name FROM Attribute WHERE Name=\"$title\" AND FK_AttributeType=1";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Adding title to Database</div>';
+			// insert it 
+			$sql = "INSERT INTO Attribute (FK_AttributeType, Name) VALUES (1, \"$title\")";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			$title_id = mysqli_insert_id($con);
+			$out.='<div>Title id: '.$title_id.'</div>';
 		}
-	else
-	{
-	$fileIdent = $fileID;
-	$fileChk = "SELECT * FROM `File_Attribute` WHERE `FK_Attribute`= $attrib AND FK_File=$fileIdent" ;
-	$chkResult = mysql_query($fileChk) or die (mysql_error()); $chkCount = mysql_num_rows($chkResult); $chk = mysql_fetch_assoc($chkResult);
-	if ( $chkCount < 1)
-	{
-		$idQuery2="INSERT INTO File_Attribute  VALUES (\"$fileIdent\", \"$attrib\", 0, 0, NULL, NULL, NULL, 0, CURTIME(), NULL  )";
-		mysql_query($idQuery2)  or die (mysql_error());
-	} else
-	{
-	}
-	};$out.="$content1 - done";
-	$i++;}$out.='IDs complete <br></td></tr><tr><td>';
-//=========synopsis===================================================================================================
+		else {
+			$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+			$title_id = $row['PK_Attribute'];
+			$out.='<div>Found existing title, id: '.$title_id.'</div>';
+		}	
+			
+		// Link Title with TV Show
+		$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$title_id AND FK_File=$fileIdent";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Linking title with TV show.</div>';
+			// insert it 
+			$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $title_id, 0, 0)";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		}
+		else {
+			$out.='<div>Title already linked with TV show.</div>';
+		}
+			
+		// Update Season
+		$out.='<div>Adding season info to TV show.</div>';
+		$season = mysqli_real_escape_string($con, $seaIdent);
+		$sql = "SELECT PK_Attribute, Name, Class FROM Attribute WHERE Class=\"$season\" AND FK_AttributeType=48";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Adding season to Database</div>';
+			// insert it 
+			$sql = "INSERT INTO Attribute (FK_AttributeType, Name, Class) VALUES (48, 'Season', \"$season\")";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			$season_id = mysqli_insert_id($con);
+			$out.='<div>Season id: '.$season_id.'</div>';
+		}
+		else {
+			$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+			$season_id = $row['PK_Attribute'];
+			$out.='<div>Found existing season, id: '.$season_id.'</div>';
+		}	
+			
+		// Link Season with TV Show
+		$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$season_id AND FK_File=$fileIdent";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Linking season with TV show.</div>';
+			// insert it 
+			$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $season_id, 0, 0)";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		}
+		else {
+			$out.='<div>Season already linked with TV show.</div>';
+		}
+			
+		// Update Episode
+		$out.='<div>Adding episode info to TV show.</div>';
+		$episode = mysqli_real_escape_string($con, $epIdent);
+		$sql = "SELECT PK_Attribute, Name, Class FROM Attribute WHERE Class=\"$episode\" AND FK_AttributeType=49";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Adding episode to Database</div>';
+			// insert it 
+			$sql = "INSERT INTO Attribute (FK_AttributeType, Name, Class) VALUES (49, 'Episode', \"$episode\")";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			$episode_id = mysqli_insert_id($con);
+			$out.='<div>Episode id: '.$episode_id.'</div>';
+		}
+		else {
+			$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+			$episode_id = $row['PK_Attribute'];
+			$out.='<div>Found existing episode, id: '.$episode_id.'</div>';
+		}	
+			
+		// Link Episode with TV Show
+		$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$episode_id AND FK_File=$fileIdent";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Linking episode with TV show.</div>';
+			// insert it 
+			$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $episode_id, 0, 0)";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		}
+		else {
+			$out.='<div>Episode already linked with TV show.</div>';
+		}
+		
+		// Update overview
+		$out.='<div>Adding overview info to TV show.</div>';
+		$overview = mysqli_real_escape_string($con, $episodeData['overview']);
+		$sql = "SELECT PK_Attribute, Name FROM Attribute WHERE Name=\"$overview\" AND FK_AttributeType=17";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Adding overview to Database</div>';
+			// insert it 
+			$sql = "INSERT INTO Attribute (FK_AttributeType, Name) VALUES (17, \"$overview\")";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			$overview_id = mysqli_insert_id($con);
+			$out.='<div>Overview id: '.$overview_id.'</div>';
+		}
+		else {
+			$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+			$overview_id = $row['PK_Attribute'];
+			$out.='<div>Found existing overview, id: '.$overview_id.'</div>';
+		}	
+			
+		// Link Overview with TV Show
+		$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$overview_id AND FK_File=$fileIdent";
+		$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		if (mysqli_num_rows($result)==0) {
+			$out.='<div>Linking overview with TV show.</div>';
+			// insert it 
+			$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $overview_id, 0, 0)";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+		}
+		else {
+			$out.='<div>Overview already linked with TV show.</div>';
+		}
+		
+		
+		// Get Episode thumb, its in filename
+		$out.='<div>Adding episode/series image thumbnails to TV show.</div>';
+		
+		// Use episode if we have it
+		if ($episodeData['filename'] != '') {
+		
+			$out.='<div>Episode image: '.$episodeData['filename'].'</div>';
+			
+			// check if we have image for this TV show already
+			$sql = "SELECT PK_Picture FROM Picture_File WHERE FK_File=$fileIdent";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				// save the image
+				$imageURL = "http://www.thetvdb.com/banners/".$episodeData['filename'];
+				$fileName = rand(1000,20000).rand(1000,20000).".jpg";
+				
+				// Download
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $imageURL);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 200);
+				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 200);
+				$rawdata = curl_exec($ch);
+				curl_close($ch);
+				$file = APPROOT."mediapics/".$fileName;
+				$sfile = APPROOT."mediapics/".$fileName."_tn.jpg";
+				file_put_contents($file, $rawdata);
+				
+				// Create thumb
+				exec("/usr/local/bin/convert " . $file . " -resize x150 " . $sfile);
+				
+				// create db entry for image
+				$sql = "INSERT INTO Picture (FK_PictureType, Extension, URL) VALUES (1, 'jpg', '')";
+				mysqli_query($con, $sql) or die(mysqli_error($con));
+				$picture_id = mysqli_insert_id($con);
+				
+				// rename file to picture id
+				rename($file, APPROOT."mediapics/".$picture_id.".jpg");
+				rename($sfile, APPROOT."mediapics/".$picture_id."_tn.jpg");
+				
+				// Link TV show and Picture
+				$sql = "INSERT INTO Picture_File (FK_Picture, FK_File) VALUES ($picture_id, $fileIdent)";
+				mysqli_query($con, $sql) or die(mysqli_error($con));
+			}
+			else {
+				$out.='<div>TV show already has a picture</div>';
+			}
+		}
+		// Fall back to series banner if no episode pic
+		else if ($episodeData['series']['banner'] != '') {
+		
+			$out.='<div>Series image: '.$episodeData['series']['banner'].'</div>';
+			
+			// check if we have image for this TV show already
+			$sql = "SELECT PK_Picture FROM Picture_File WHERE FK_File=$fileIdent";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				// save the image
+				$imageURL = "http://www.thetvdb.com/banners/".$episodeData['series']['banner'];
+				$fileName = rand(1000,20000).rand(1000,20000).".jpg";
+				
+				// Download
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $imageURL);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_TIMEOUT, 200);
+				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 200);
+				$rawdata = curl_exec($ch);
+				curl_close($ch);
+				$file = APPROOT."mediapics/".$fileName;
+				$sfile = APPROOT."mediapics/".$fileName."_tn.jpg";
+				file_put_contents($file, $rawdata);
+				
+				// Create thumb
+				exec("/usr/local/bin/convert " . $file . " -resize x150 " . $sfile);
+				
+				// create db entry for image
+				$sql = "INSERT INTO Picture (FK_PictureType, Extension, URL) VALUES (1, 'jpg', '')";
+				mysqli_query($con, $sql) or die(mysqli_error($con));
+				$picture_id = mysqli_insert_id($con);
+				
+				// rename file to picture id
+				rename($file, APPROOT."mediapics/".$picture_id.".jpg");
+				rename($sfile, APPROOT."mediapics/".$picture_id."_tn.jpg");
+				
+				// Link TV show and Picture
+				$sql = "INSERT INTO Picture_File (FK_Picture, FK_File) VALUES ($picture_id, $fileIdent)";
+				mysqli_query($con, $sql) or die(mysqli_error($con));
+			}
+			else {
+				$out.='<div>TV show already has a picture</div>';
+			}
+		}
+		else {
+			$out.='<div>TV show does not have a picture from TVDB</div>';
+		}
+		
+		// series genre, need to clean this up
+		$out.='<div>Adding genre info to TV show.</div>';
+		$genre_string = $episodeData['series']['genre'];
+		
+		// first remove | from end of string
+		if (substr($genre_string, -1) == '|') {
+			$genre_string = substr($genre_string, 0, -1);
+		}
+		
+		// split on |
+		$genres = explode("|", $genre_string);
+		
+		foreach($genres as $genre_name) {
+			
+			if ($genre_name == '') {
+				continue;
+			}
+			
+			$out.='<div>Adding genre: '.$genre_name.'</div>';
+			
+			$genre = mysqli_real_escape_string($con, $genre_name);
+			$sql = "SELECT PK_Attribute, Name FROM Attribute WHERE Name=\"$genre\" AND FK_AttributeType=8";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				$out.='<div>Adding genre to Database</div>';
+				// insert it 
+				$sql = "INSERT INTO Attribute (FK_AttributeType, Name) VALUES (8, \"$genre\")";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+				$genre_id = mysqli_insert_id($con);
+				$out.='<div>Genre id: '.$genre_id.'</div>';
+			}
+			else {
+				$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+				$genre_id = $row['PK_Attribute'];
+				$out.='<div>Found existing genre, id: '.$genre_id.'</div>';
+			}
+				
+			// Link Genre with TV Show
+			$sql = "SELECT FK_Attribute, FK_File FROM File_Attribute WHERE FK_Attribute=$genre_id AND FK_File=$fileIdent";
+			$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			if (mysqli_num_rows($result)==0) {
+				$out.='<div>Linking genre with TV show.</div>';
+				// insert it 
+				$sql = "INSERT INTO File_Attribute (FK_File, FK_Attribute, Track, Section) VALUES ($fileIdent, $genre_id, 0, 0)";
+				$result = mysqli_query($con, $sql) or die(mysqli_error($con));
+			}
+			else {
+				$out.='<div>Genre already linked with TV show.</div>';
+			}
+			
+		}
+		
+		$out.='<div>Finished Processing TV Show.</div>';
+		}
+		}
+		$out.='</td></table>';
 	
-	$synopsis=mysql_real_escape_string($episodeData['synopsis']);
-	$Ssql = "SELECT * FROM `LongAttribute` WHERE `Text` = \"$synopsis\" AND FK_File=\"$fileIdent\" "; 
-	$Sresult = mysql_query($Ssql)or die (mysql_error());
-	$Scount = mysql_num_rows($Sresult);	 
-	
-	if ($Scount < 1)
-	{		$out.= 'Show synopsis not found...' ;
-			$SfileIdent = $_POST['fileID'];
-			mysql_query("INSERT INTO LongAttribute VALUES (\"\" , 37 ,NULL, \"$fileIdent\", NULL, \"$synopsis\" , NULL, NULL, NULL, 0 ,CURTIME() ,NULL )")or die (mysql_error());		
-			}$out.= 'Synopsis<p><b>'.$synopsis.'</b></p></td></tr><tr><td>';
-	
-	$out.= $fileID.':Complete<br></td></tr>';	
-	}
-	$out.='<h1> Batch Complete</h1></td>';
-	
-				$output->setReloadLeftFrame(false);
-				$output->setMenuTitle('Search TVDB ||');
-				$output->setPageTitle('Batch Confirm');
-				$output->setScriptInHead($scriptInHead);	
-				$output->setScriptInBody('bgColor="#F0F3F8"');
-				$output->setBody($out);
-				$output->setTitle(APPLICATION_NAME);			
-				$output->output();
+}
+// NO ACTION YET
+else
+{
+	include(APPROOT.'/languages/'.$GLOBALS['lang'].'/common.lang.php');
+	include(APPROOT.'/languages/'.$GLOBALS['lang'].'/editMediaFile.lang.php');
 
+	$out.='<ul>
+		<li><form method="post" action="index.php">
+			<input type="hidden" name="section" value="tvdbbatch">
+			<input type="hidden" name="action" value="scan">
+			<input type="submit" value="Scan for TV Shows">
+			</form>
+		</li></ul>';
 
 }
 
+	$output->setReloadLeftFrame(false);
+	$output->setMenuTitle('Check TVDB');
+	$output->setPageTitle('TVDB Batch Updater');
+	$output->setScriptInHead($scriptInHead);	
+	$output->setScriptInBody('bgColor="#F0F3F8"');
+	$output->setBody($out);
+	$output->setTitle(APPLICATION_NAME);			
+	$output->output();
 
+}//end primary function
+
+function dowloadUrlToFile($url, $dest) {
+
+	if ($url == '')
+		return false;
+	
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 200);
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 200);
+	$rawdata = curl_exec($ch);
+	curl_close($ch);
+	file_put_contents($dest, $rawdata);
+	
+	return filesize($dest);
+}
+
+function episodeInfo(&$xmlObj, $season, $episode) {
+	
+	$result = array();
+	
+	// Get Series Data
+	$result['series']['id'] = $xmlObj->Series->id;
+	$result['series']['language'] = $xmlObj->Series->Language;
+	$result['series']['series'] = $xmlObj->Series->SeriesName;
+	$result['series']['overview'] = $xmlObj->Series->Overview;
+	$result['series']['banner'] = $xmlObj->Series->banner;
+	$result['series']['network'] = $xmlObj->Series->Network;
+	$result['series']['rating'] = $xmlObj->Series->Rating;
+	$result['series']['genre'] = $xmlObj->Series->Genre;
+	
+	// Get Actors
+	$result['series']['actors'] = array();
+	foreach ($xmlObj->Series->Actors->Actor as $actor) {
+		$actor_array = array('name' => $actor->Name, 'role' => $actor->Role, 'image' => $actor->Image);
+		$result['series']['actors'][] = $actor_array;
+	}
+	
+	// Get Episode Data
+	foreach ($xmlObj->Episode as $ep) {
+		if ($ep->SeasonNumber == $season && $ep->EpisodeNumber == $episode) {
+			
+			$result['id'] = $ep->id;
+			$result['season'] = $ep->SeasonNumber;
+			$result['episode'] = $ep->EpisodeNumber;
+			$result['director'] = $ep->Director;
+			$result['episodename'] = $ep->EpisodeName;
+			$result['first_aired'] = $ep->FirstAired;
+			$result['overview'] = $ep->Overview;
+			$result['filename'] = $ep->filename;
+			$result['season_id'] = $ep->seasonid;
+			$result['series_id'] = $ep->seriesid;
+			
+			break;
+		}
+	}
+	
+	return $result;
+}
 ?>

@@ -131,7 +131,11 @@ class VCardProperty
      */
     function parse(&$lines)
     {
-        while (list(, $line) = each($lines)) {
+        // Reset the array pointer to the beginning
+        reset($lines);
+        
+        // Use foreach with a key to track current position
+        foreach ($lines as $key => $line) {
             $line = rtrim($line);
             $tmp = split_quoted_string(":", $line, 2);
             if (count($tmp) == 2) {
@@ -143,10 +147,13 @@ class VCardProperty
                 for ($i = 1; $i < count($tmp); $i++) {
                     $this->_parseParam($tmp[$i]);
                 }
-                if ($this->params['ENCODING'][0] == 'QUOTED-PRINTABLE') {
+                if (isset($this->params['ENCODING'][0]) && $this->params['ENCODING'][0] == 'QUOTED-PRINTABLE') {
+                    // Remove the current item from iteration
+                    // Since we've processed this line, move the array pointer forward
+                    next($lines);
                     $this->_decodeQuotedPrintable($lines);
                 }
-                if ($this->params['CHARSET'][0] == 'UTF-8') {
+                if (isset($this->params['CHARSET'][0]) && $this->params['CHARSET'][0] == 'UTF-8') {
                     $this->value = utf8_decode($this->value);
                 }
                 return true;
@@ -236,9 +243,18 @@ class VCardProperty
         $value = &$this->value;
         while ($value[strlen($value) - 1] == "=") {
             $value = substr($value, 0, strlen($value) - 1);
-            if (!(list(, $line) = each($lines))) {
+            
+            // Get the current position of the array pointer
+            $line = current($lines);
+            
+            // If there's no current line, break
+            if ($line === false) {
                 break;
             }
+            
+            // Move the pointer to the next element
+            next($lines);
+            
             $value .= rtrim($line);
         }
         $value = quoted_printable_decode($value);

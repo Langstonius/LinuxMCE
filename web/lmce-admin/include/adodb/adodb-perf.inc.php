@@ -693,7 +693,8 @@ Committed_AS:   348732 kB
 
 	// magic quotes
 
-	if (isset($_GET['sql']) && get_magic_quotes_gpc()) {
+	if (isset($_GET['sql'])) {
+		// Handle any escaped quotes for PHP 7+ compatibility (magic quotes no longer used)
 		$_GET['sql'] = $_GET['sql'] = str_replace(array("\\'",'\"'),array("'",'"'),$_GET['sql']);
 	}
 
@@ -999,10 +1000,9 @@ Committed_AS:   348732 kB
 
 	function undomq($m)
 	{
-	if (get_magic_quotes_gpc()) {
-		// undo the damage
-		$m = str_replace('\\\\','\\',$m);
-		$m = str_replace('\"','"',$m);
+	// Handle any escaped characters for PHP 7+ compatibility (magic quotes no longer used)
+	$m = str_replace('\\\\','\\',$m);
+	$m = str_replace('\"','"',$m);
 		$m = str_replace('\\\'','\'',$m);
 	}
 	return $m;
