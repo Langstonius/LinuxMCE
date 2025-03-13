@@ -77,7 +77,7 @@ function backup($output,$dbADO) {
 			$result=exec_batch_command($cmd,1);
 			
 			
-			if(ereg('Restore point created.',$result)){
+			if(preg_match('/Restore point created\./',$result)){
 				$backupFile='/home/backup/download/backup-'.date('Y-m-d-H-i').'.tar.gz';
 				if(file_exists($backupFile)){
 					header("Location: index.php?section=backup&msg=".urlencode($result));

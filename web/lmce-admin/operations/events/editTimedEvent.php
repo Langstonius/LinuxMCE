@@ -177,9 +177,9 @@ function editTimedEvent($output,$dbADO) {
 				$resOldValue=$dbADO->Execute('SELECT * FROM CriteriaParm WHERE FK_CriteriaParmNesting=? AND FK_CriteriaParmList=?',array($FK_CriteriaParmNesting,$GLOBALS['TimeOfDayParmList']));
 				if($resOldValue->RecordCount()!=0){
 					$rowOldValues=$resOldValue->FetchRow();
-					$oldIntervalNumber=(ereg('h',$rowOldValues['Value']))?str_replace('h','',$rowOldValues['Value']):$rowOldValues['Value'];
-					$oldIntervalNumber=(ereg('m',$oldIntervalNumber))?str_replace('m','',$oldIntervalNumber):$oldIntervalNumber;
-					$oldIntervalType=(ereg('h',$rowOldValues['Value']))?1:((ereg('m',$rowOldValues['Value']))?2:3);	// 3 is error case
+					$oldIntervalNumber=(preg_match('/h/',$rowOldValues['Value']))?str_replace('h','',$rowOldValues['Value']):$rowOldValues['Value'];
+					$oldIntervalNumber=(preg_match('/m/',$oldIntervalNumber))?str_replace('m','',$oldIntervalNumber):$oldIntervalNumber;
+					$oldIntervalType=(preg_match('/h/',$rowOldValues['Value']))?1:((preg_match('/m/',$rowOldValues['Value']))?2:3);	// 3 is error case
 				}
 
 				$out.='<input type="hidden" name="oldInterval" value="'.@$rowOldValues['Value'].'">';

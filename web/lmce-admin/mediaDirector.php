@@ -134,11 +134,11 @@ while($rowCaptureCard=$resCaptureCard->FetchRow()){
 		<td><table>';
 		while($rowInputs=$resInputs->FetchRow()){
 			$inputsArray[]=$rowInputs['cardinputid'];
-			$pulldownEnabled=((ereg('/usr/pluto/bin',$rowInputs['externalcommand']))?'':'disabled');
+			$pulldownEnabled=((preg_match('|/usr/pluto/bin|',$rowInputs['externalcommand']))?'':'disabled');
 			$out.='
 				<tr>
 					<td>'.$rowInputs['inputname'].'</td>
-					<td><input type="checkbox" name="external_'.$rowInputs['cardinputid'].'" value="1" '.((ereg('/usr/pluto/bin',$rowInputs['externalcommand']))?'checked':'').' onClick="enableDevice(\''.$rowInputs['cardinputid'].'\')"> External</td>
+					<td><input type="checkbox" name="external_'.$rowInputs['cardinputid'].'" value="1" '.((preg_match('|/usr/pluto/bin|',$rowInputs['externalcommand']))?'checked':'').' onClick="enableDevice(\''.$rowInputs['cardinputid'].'\')"> External</td>
 					<td>'.pulldown('device_'.$rowInputs['cardinputid'],$devicesInRoom,$rowInputs['externalcommand'],$pulldownEnabled).'</td>
 				</tr>';
 		}

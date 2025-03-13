@@ -38,7 +38,7 @@ function get_video_frame($cameraid,$installationID,$dbADO){
 
 	$msg=$TEXT_ERROR_CAMERA_SCREENSHOT_NOT_AVAILABLE_CONST;
 	foreach ($retArray as $line) {
-		if(ereg(':OK',$line)){
+		if(preg_match('/:OK/',$line)){
 			exec('mv /var/www/lmce-admin/security_images/19.out /var/www/lmce-admin/security_images/'.$cameraid.'.jpg',$retArray,$retCode);
 			$msg='<img src="security_images/'.$cameraid.'.jpg" alt="'.$TEXT_LOADING_CONST.'"/>';
 		}

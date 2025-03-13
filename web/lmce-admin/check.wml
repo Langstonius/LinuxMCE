@@ -335,7 +335,7 @@ function displayScreens($dbADO)
 				exec($cmd,$retArray);
 				$msg='Camera screenshot not available.';
 				foreach ($retArray as $line) {
-					if(!ereg(':OK',$line)){
+					if(!preg_match('/:OK/',$line)){
 						exec('mv /var/www/lmce-admin/security_images/19.out /var/www/lmce-admin/security_images/'.$cameraid.'.jpg',$retArray,$retCode);
 						$msg='<img src="security_images/'.$cameraid.'.jpg" alt="Loading ..."/>';
 					}

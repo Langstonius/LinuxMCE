@@ -3953,7 +3953,7 @@ function pickDeviceTemplate_old($categoryID, $boolManufacturer,$boolCategory,$bo
 							WHERE 1=1 $where ORDER BY Description";	
 			$rs = $dbADO->_Execute($queryModels);
 			
-			if(ereg('parentID',@$_SESSION['from']) && @$_SESSION['parentID']!=0){
+			if(preg_match('/parentID/',@$_SESSION['from']) && @$_SESSION['parentID']!=0){
 				$allowedDevices=getDeviceTemplatesControlledBy($_SESSION['parentID'],$dbADO);
 			}
 			$arJsPos=0;
@@ -6034,12 +6034,12 @@ function import_remote_sql($remoteUrl,$dbADO,$table=''){
 	// get data from plutohome server
 	$remoteData=queryExternalServer($remoteUrl);
 
-	if(!ereg('Database import',$remoteData)){
+	if(!preg_match('/Database import/',$remoteData)){
 		@error_log($remoteData,$GLOBALS['ErrorLog']);
 		return 1;
 	}
 		
-	if(ereg('ERROR',$remoteData)){
+	if(preg_match('/ERROR/',$remoteData)){
 		error_log($remoteData,3,$GLOBALS['ErrorLog']);
 		return 1;
 	}

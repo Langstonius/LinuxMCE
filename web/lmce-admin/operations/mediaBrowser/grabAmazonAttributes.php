@@ -37,7 +37,7 @@ function getCoverArt($out){
 		return false;
 	}
 	foreach ($matches[1] as $url){
-		if(ereg('gp/product/image',$url)){
+		if(preg_match('|gp/product/image|',$url)){
 			$cmd='wget --header=\'Accept-encoding: gzip\' --header=\'User-Agent: Lynx/2.8.5rel.1 libwww-FM/2.14 SSL-MM/1.4.1 GNUTLS/1.0.16\' -O - \''.$url.'\' | gunzip -c';
 			$coverArtPage=exec_batch_command($cmd,1);
 

@@ -233,7 +233,7 @@ function rooms($output,$dbADO) {
 			$locationGoTo = "roomDesc_".$room;
 
 			// upload room picture
-			$imgType=(ereg('png',$_FILES['pic_'.$room]['type']))?'png':'jpg';
+			$imgType=(preg_match('/png/',$_FILES['pic_'.$room]['type']))?'png':'jpg';
 			$filePath=$GLOBALS['roomsPicsPath'].$room.'.'.$imgType;
 			if($_FILES['pic_'.$room]['name']!=''){
 				switch($_FILES['pic_'.$room]['type']){

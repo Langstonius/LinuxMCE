@@ -343,7 +343,7 @@ function addDirAttribute($newAttributeType,$newAttributeName,$fileID,$dbADO){
 
 	$cmd='/usr/pluto/bin/MessageSend localhost -targetType device -r -o 0 '.$mediaPlugin.' 1 391 122 '.$newAttributeType.' 145 '.$fileID.' 5 "'.$newAttributeName.'"';
 	$response=exec_batch_command($cmd,1);
-	$suffix=(ereg('RESP: OK',$response))?'RESP: OK':'';
+	$suffix=(preg_match('/RESP: OK/',$response))?'RESP: OK':'';
 	
 	return substr($response,strrpos($response,':')+1);
 }

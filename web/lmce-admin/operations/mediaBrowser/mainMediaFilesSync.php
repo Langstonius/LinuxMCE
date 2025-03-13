@@ -185,7 +185,7 @@ function mainMediaFilesSync($output,$mediadbADO,$dbADO) {
 	// process area
 		if($action=='renDir'){
 			$newDir=stripslashes($_REQUEST['newDir']);
-			if(ereg('/',$newDir)){
+			if(preg_match('|/|',$newDir)){
 				header('Location: index.php?section=mainMediaFilesSync&path='.urlencode($path).'&error='.$TEXT_ERROR_INVALID_DIRECTORY_NAME_CONST);
 				exit();
 			}else{
@@ -252,7 +252,7 @@ function mainMediaFilesSync($output,$mediadbADO,$dbADO) {
 
 		if($action=='newDir'){
 			$subDir=stripslashes($_REQUEST['subDir']);
-			if(ereg('/',$subDir)){
+			if(preg_match('|/|',$subDir)){
 				header('Location: index.php?section=mainMediaFilesSync&path='.urlencode($path).'&error='.$TEXT_ERROR_INVALID_SUBDIRECTORY_NAME_CONST);
 			}else{
 				$newPath=$path.'/'.$subDir;

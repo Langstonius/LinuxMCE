@@ -433,7 +433,7 @@ function editMediaFile($output,$mediadbADO,$dbADO) {
 					
 					
 					$AttributeAdded=addAttribute($newAttributeType,$newAttributeName,$fileID,$dbADO);
-					$isAdded=(ereg('RESP: OK',$AttributeAdded))?true:false;
+					$isAdded=(preg_match('/RESP: OK/',$AttributeAdded))?true:false;
 					
 					if($isAdded!==true){
 						header('Location: index.php?section=editMediaFile&fileID='.$fileID.'&error='.$TEXT_ERROR_ATTRIBUTE_NOT_ADDED_CONST);
@@ -445,7 +445,7 @@ function editMediaFile($output,$mediadbADO,$dbADO) {
 				}
 			}else{
 				$AttributeAdded=addAttribute($newAttributeType,$newAttributeName,$fileID,$dbADO);
-				$isAdded=(ereg('RESP: OK',$AttributeAdded))?true:false;
+				$isAdded=(preg_match('/RESP: OK/',$AttributeAdded))?true:false;
 				if($isAdded!==true){
 					header('Location: index.php?section=editMediaFile&fileID='.$fileID.'&error='.$TEXT_ERROR_ATTRIBUTE_NOT_ADDED_CONST);
 					exit();
@@ -693,7 +693,7 @@ function addAttribute($newAttributeType,$newAttributeName,$fileID,$dbADO){
 
 	$cmd='/usr/pluto/bin/MessageSend localhost -targetType device -r 0 '.$mediaPlugin.' 1 391 122 '.$newAttributeType.' 145 '.$fileID.' 5 "'.$newAttributeName.'"';
 	$response=exec_batch_command($cmd,1);
-	$suffix=(ereg('RESP: OK',$response))?'RESP: OK':'';
+	$suffix=(preg_match('/RESP: OK/',$response))?'RESP: OK':'';
 	
 	return $cmd.'<br>'.$TEXT_RESPONSE_CONST.': '.$suffix;
 }

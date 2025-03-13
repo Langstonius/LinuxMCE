@@ -425,7 +425,7 @@ function automaticGrabStatus(){
 	$cmd='sudo -u root /usr/pluto/bin/grabcoverart.sh status';
 	$ret=exec_batch_command($cmd,1);
 	
-	if(ereg('Daemon allready running',$ret)){
+	if(preg_match('/Daemon allready running/',$ret)){
 		return true;		
 	}
 	return false;

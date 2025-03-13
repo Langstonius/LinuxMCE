@@ -471,7 +471,7 @@ function writeToFile($accessFile, $variable,$oldValue,$newValue)
 	}
 	$oldFile=implode('',$oldFileArray);
 	$stringToReplace=$variable.'='.$oldValue;
-	if(ereg($stringToReplace,$oldFile)){
+	if(preg_match('/' . preg_quote($stringToReplace, '/') . '/',$oldFile)){
 		$newFile=str_replace($stringToReplace,$variable.'='.$newValue,$oldFile);
 	}
 	else
@@ -498,7 +498,7 @@ function removeFromFile($variable,$accessFile)
 	}
 	$oldFile='';
 	foreach($oldFileArray AS $line)
-		if(!ereg($variable,$line))
+		if(!preg_match('/' . preg_quote($variable, '/') . '/',$line))
 			$oldFile.=$line;
 	if(!is_writable($accessFile)){
 		header("Location: index.php?section=outsideAccess&error=".translate('TEXT_ERROR_CANNOT_WRITE_TO_FILE_CONST')." ".$accessFile);
