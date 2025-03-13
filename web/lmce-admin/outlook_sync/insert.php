@@ -1,103 +1,115 @@
 <?php
 include_once "config.inc";
+include_once '../include/adodb/adodb.inc.php';
+include_once '../include/adodb/adodb-errorhandler.inc.php';
 
-function insertphones($fd,$cid,$link){
-	while ((trim($buffer=fgets($fd,4096))!= "") && (!feof($fd)) && ($cid!="")){
-		$sql="select PK_PhoneType from PhoneType where ucase(Description)='". strtoupper(trim($buffer))."'";
-		$result=mysql_query($sql,$link);
-		if (mysql_num_rows($result)>0){
-			$row=mysql_fetch_row($result);
-			$phonetype=$row[0];	
-			$buffer=fgets($fd,4096);
-			$sql="insert into PhoneNumber(FK_Contact,FK_PhoneType,Countrycode,AreaCode,PhoneNumber,Extension) values ('". $cid ."','".$phonetype . "',".$buffer .")" ;
-			mysql_query($sql,$link);
-		}else {
-			echo "Error : No phone type found ".$sql."|";
-		}
-	}
-
+// Create ADOdb connection
+$db = ADONewConnection('mysqli');
+if (!$db->PConnect($DB_SERVER, $DB_LOGIN, $DB_PASSWORD, $DB)) {
+    echo("Error : Internal error. Failed to connect to database|");
+    exit();
 }
 
+function insertphones($fd, $cid, $db) {
+    while ((trim($buffer = fgets($fd, 4096)) != "") && (!feof($fd)) && ($cid != "")) {
+        $sql = "SELECT PK_PhoneType FROM PhoneType WHERE UPPER(Description) = ?";
+        $result = $db->Execute($sql, array(strtoupper(trim($buffer))));
+        
+        if ($result && $result->RecordCount() > 0) {
+            $row = $result->FetchRow();
+            $phonetype = $row[0];
+            $buffer = fgets($fd, 4096);
+            
+            $sql = "INSERT INTO PhoneNumber(FK_Contact, FK_PhoneType, Countrycode, AreaCode, PhoneNumber, Extension) 
+                    VALUES (?, ?, " . $buffer . ")";
+            $db->Execute($sql, array($cid, $phonetype));
+        } else {
+            echo "Error : No phone type found " . $sql . "|";
+        }
+    }
+}
 
-$i=0;
-if (!($link = mysql_pconnect($DB_SERVER,$DB_LOGIN,$DB_PASSWORD)))
-  {  echo("Error : Internal error.Failed to connect to database|");
-  exit();
-  }
- if (!($nresult=mysql_select_db($DB,$link)))
-  {
-  echo("Error : in connecting to the database |");
-  exit();
-  } 
+$i = 0;
+$userfiletemp = $_FILES['fileinsert']['tmp_name'];    
+$fd = fopen($userfiletemp, "r");
+$e = 0;
+$st = "";
 
-$userfiletemp=$_FILES['fileinsert']['tmp_name'];	
-$fd=fopen($userfiletemp,"r");
-$e=0;
-$st="";
-if (!feof($fd))  $buffer = fgets($fd, 4096);
+if (!feof($fd)) $buffer = fgets($fd, 4096);
 if (!feof($fd))
 while (!feof($fd)) {
-   if ($i==0)
-   {	$i++;
-	if (trim($buffer)!="xcevw12e9f5kj"){
-		fclose($fd);
-		exit();
-	}
-   }
-	while((($buffer=fgets($fd,4096))) && (!feof($fd))){if (trim($buffer)!='') break;}
-	if (!(feof($fd))){
-		$buffer=mysql_real_escape_string($buffer);
-		$arrfields=explode("~",$buffer);
-		$sql="select PK_Contact from Contact where EntryID='".$arrfields[0]."'";
-
-		$rowset=mysql_query($sql,$link);
-		if (mysql_num_rows($rowset)>0){
-
-		// update
-
-			$row=mysql_fetch_array($rowset);
-			$cid=$row['PK_Contact'];
-
-
-			$sql="update Contact set Name='".$arrfields[1]."',";
-			$sql.="Company='".$arrfields[2]."',";
-			$sql.="JobDescription='".$arrfields[3]."',";
-			$sql.="Title='".$arrfields[4]."',";
-			$sql.="Email='".$arrfields[5]."' where EntryID='".$arrfields[0]."'";
-
-			mysql_query($sql,$link);
-		
-			mysql_query("delete from PhoneNumber where FK_Contact=$cid",$link);
-
-			insertphones($fd,$cid,$link);
-			
-			
-			
-		}else{		
-
-		// insert	
-
-			$buffer="";
-			for ($ctr=0;$ctr<count($arrfields);$ctr++){
-				$buffer.="'".$arrfields[$ctr]."',";
-			}
-
-			$buffer=substr($buffer,0,strlen($buffer)-1);
-
-			$sql="insert into Contact(EntryID,Name,Company,JobDescription,Title,Email) values (" . $buffer . ")";
-			$result=mysql_query($sql,$link);
-			$cid=mysql_insert_id($link);
-			if(!($result))
-			{ $e++;
-				echo "Error ID: ".$i. "  Execution Query ".$sql .". ErrorNo =". mysql_errno()." Error=".mysql_error() . "|";
-				$cid="";
-			}
-			insertphones($fd,$cid,$link);
-		}
-	}
-	
+    if ($i == 0) {
+        $i++;
+        if (trim($buffer) != "xcevw12e9f5kj") {
+            fclose($fd);
+            exit();
+        }
+    }
+    
+    while((($buffer = fgets($fd, 4096))) && (!feof($fd))) {
+        if (trim($buffer) != '') break;
+    }
+    
+    if (!(feof($fd))) {
+        // Use ADOdb's qstr to safely escape strings
+        $buffer = $db->qstr($buffer, false);
+        $buffer = substr($buffer, 1, -1); // Remove the quotes added by qstr
+        $arrfields = explode("~", $buffer);
+        
+        $sql = "SELECT PK_Contact FROM Contact WHERE EntryID = ?";
+        $rowset = $db->Execute($sql, array($arrfields[0]));
+        
+        if ($rowset && $rowset->RecordCount() > 0) {
+            // update
+            $row = $rowset->FetchRow();
+            $cid = $row['PK_Contact'];
+            
+            $sql = "UPDATE Contact SET 
+                    Name = ?,
+                    Company = ?,
+                    JobDescription = ?,
+                    Title = ?,
+                    Email = ? 
+                    WHERE EntryID = ?";
+            
+            $db->Execute($sql, array(
+                $arrfields[1],
+                $arrfields[2],
+                $arrfields[3],
+                $arrfields[4],
+                $arrfields[5],
+                $arrfields[0]
+            ));
+            
+            $db->Execute("DELETE FROM PhoneNumber WHERE FK_Contact = ?", array($cid));
+            insertphones($fd, $cid, $db);
+            
+        } else {        
+            // insert    
+            $sql = "INSERT INTO Contact(EntryID, Name, Company, JobDescription, Title, Email) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+            
+            $result = $db->Execute($sql, array(
+                $arrfields[0],
+                $arrfields[1],
+                $arrfields[2],
+                $arrfields[3],
+                $arrfields[4],
+                $arrfields[5]
+            ));
+            
+            $cid = $db->Insert_ID();
+            
+            if(!$result) { 
+                $e++;
+                echo "Error ID: " . $i . "  Execution Query " . $sql . ". Error = " . $db->ErrorMsg() . "|";
+                $cid = "";
+            }
+            
+            insertphones($fd, $cid, $db);
+        }
+    }
 }
+
 fclose($fd);
-
-
 ?>
