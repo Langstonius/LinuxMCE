@@ -78,8 +78,8 @@ function mythSettings($output,$dbADO) {
 		if (count($sids)>0)
 		{
 			$MDArray=getDevicesArrayFromCategory($GLOBALS['rootMediaDirectors'],$dbADO);
-			reset($MDArray);
-			list($mdk, $mdv) = each($MDArray);
+			$mdk = key($MDArray);
+			$mdv = $MDArray[$mdk];
 
 			$out.='<br>'.$TEXT_MYTH_PICK_MD_CONST.'&nbsp;'.pulldownFromArray($MDArray,'OutputMD', $mdk).'<br>';	
 			
@@ -105,7 +105,8 @@ function mythSettings($output,$dbADO) {
 					else if (count($templates) == 1)
 					{
 						reset($templates);
-						list($mdk, $mdv) = each($templates);
+						$mdk = key($templates);
+						$mdv = $templates[$mdk];
 						$out.='<br>'.$TEXT_MYTH_IMPORT_ONE_LINEUP_CONST.'<br>';
 						$out.=$mdv.'&nbsp;<input type="submit" class="button" name="import_lineup_'.$sids[$i].'" value="'.$TEXT_MYTH_IMPORT_CONST.'"><br>';
 						$out.='<input type="checkbox" name="remove_unknown_'.$sids[$i].'" checked value="1">'.$TEXT_MYTH_REMOVE_UNKNOWN_CHANNELS_CONST.'<br>';

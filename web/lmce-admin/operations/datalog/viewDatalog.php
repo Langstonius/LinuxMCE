@@ -15,8 +15,8 @@ function multiexplode($string){
 //Creates a string from an array level1 separated using(,) and level2 using (;)
 function multimplode($array){
      if (!empty($array)){
-          reset($array);
-          while (list($key, $val) = each($array)) {
+          $imp = array();
+          foreach ($array as $key => $val) {
                $imp[$key] = implode(';',$val);
           }
           return(implode(',',$imp));
