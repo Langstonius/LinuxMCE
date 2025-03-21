@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # File containing missing packages
-MISSING_FILE="/home/dad/LinuxMCE/missing_packages.txt"
+MISSING_FILE="../missing_packages.txt"
 # Output file for replacement suggestions
-REPLACEMENTS_FILE="/home/dad/LinuxMCE/replacement_suggestions.txt"
+REPLACEMENTS_FILE="../replacement_suggestions.txt"
 
 # Initialize the replacements file
 echo "Suggested replacements for missing packages in Ubuntu Jammy:" > $REPLACEMENTS_FILE

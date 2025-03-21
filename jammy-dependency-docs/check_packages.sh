@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create a file to store missing packages
-echo "Packages missing in Ubuntu Jammy:" > /home/dad/LinuxMCE/missing_packages.txt
+echo "Packages missing in Ubuntu Jammy:" > ../missing_packages.txt
 
 # Check each package from the file
 while read pkg; do
@@ -15,8 +15,8 @@ while read pkg; do
   
   # Use apt-cache policy to check if the package exists
   if ! apt-cache policy "$pkg" 2>/dev/null | grep -q "Candidate:"; then
-    echo "$pkg" >> /home/dad/LinuxMCE/missing_packages.txt
+    echo "$pkg" >> ../missing_packages.txt
   fi
-done < /home/dad/LinuxMCE/src/Ubuntu_Helpers_NoHardcode/conf-files/jammy-amd64/build-packages
+done < ../src/Ubuntu_Helpers_NoHardcode/conf-files/jammy-amd64/build-packages
 
-echo "Finished checking packages. Results saved to /home/dad/LinuxMCE/missing_packages.txt"
+echo "Finished checking packages. Results saved to ../missing_packages.txt"
