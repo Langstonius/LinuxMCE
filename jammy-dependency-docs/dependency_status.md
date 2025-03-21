@@ -2,7 +2,7 @@
 
 ## Summary
 
-We've analyzed the build dependencies listed in `/home/dad/LinuxMCE/src/Ubuntu_Helpers_NoHardcode/conf-files/jammy-amd64/build-packages` for compatibility with Ubuntu Jammy (22.04 LTS). 
+We've analyzed the build dependencies listed in `../src/Ubuntu_Helpers_NoHardcode/conf-files/jammy-amd64/build-packages` for compatibility with Ubuntu Jammy (22.04 LTS). 
 
 **Results:**
 - Total packages checked: 229
@@ -29,13 +29,13 @@ We've analyzed the build dependencies listed in `/home/dad/LinuxMCE/src/Ubuntu_H
 
 ## Next Steps
 
-1. Create a PR to update the `build-packages` file with the replacements identified in `/home/dad/LinuxMCE/updated_build_packages`
+1. Create a PR to update the `build-packages` file with the replacements identified in `updated_build_packages`
 
 2. For packages without direct replacements, analyze code that depends on them:
    ```
    # Example commands to trace dependencies
-   grep -r "dancer-xml" --include="*.h" --include="*.cpp" /home/dad/LinuxMCE/src/
-   grep -r "dvb/" --include="*.h" --include="*.cpp" /home/dad/LinuxMCE/src/
+   grep -r "dancer-xml" --include="*.h" --include="*.cpp" ../src/
+   grep -r "dvb/" --include="*.h" --include="*.cpp" ../src/
    ```
 
 3. Update application code where needed to use modern libraries instead of deprecated ones
@@ -44,8 +44,8 @@ We've analyzed the build dependencies listed in `/home/dad/LinuxMCE/src/Ubuntu_H
 
 ## Files Created
 
-1. `/home/dad/LinuxMCE/missing_packages.txt` - List of packages missing in Jammy
-2. `/home/dad/LinuxMCE/replacement_suggestions.txt` - Detailed search for potential replacements
-3. `/home/dad/LinuxMCE/package_migration.md` - Table of missing packages and suggested replacements
-4. `/home/dad/LinuxMCE/updated_build_packages` - Updated build-packages file with replacements and comments
-5. `/home/dad/LinuxMCE/dependency_status.md` - This summary report
+1. `missing_packages.txt` - List of packages missing in Jammy
+2. `replacement_suggestions.txt` - Detailed search for potential replacements
+3. `package_migration.md` - Table of missing packages and suggested replacements
+4. `updated_build_packages` - Updated build-packages file with replacements and comments
+5. `dependency_status.md` - This summary report
