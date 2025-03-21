@@ -1,0 +1,239 @@
+# Updated build-packages file for Ubuntu Jammy
+# Original packages that had no direct replacement are commented out with their status
+# Modified: 2025-03-21
+
+alsa-source
+asterisk-dev
+autoconf
+automake
+automake1.11
+build-essential
+ccache
+cdbs
+cvs
+debconf-utils
+debootstrap
+devscripts
+dh-make
+dmsetup
+docbook-utils
+dpatch
+dpkg-dev
+dpkg-repack
+fakeroot
+gdb
+genisoimage
+# gnome-applets - Appears to be deprecated, determine if needed and find alternative
+gtk-doc-tools
+kernel-package
+libaa1-dev
+libasound2-dev
+libattr1-dev
+libaudio-dev
+libaudiofile-dev
+libavc1394-dev
+libavcodec-dev
+libavformat-dev
+libbluetooth-dev
+libcaca-dev
+libcap-dev
+libcddb2-dev
+libcdio-dev
+libcdparanoia0-dev
+libconfuse-dev
+libcurl4-openssl-dev
+# libdancer-xml0-dev - Not available, consider alternative XML libraries
+libdbus-1-dev
+libdbus-glib-1-dev
+libdevmapper-dev
+# libdvb-dev - Check for replacement or build from source
+libdvdnav-dev
+libdvdread-dev
+# libesd0-dev - Replaced by libpulse-dev
+libpulse-dev
+libexiv2-dev
+libextractor-dev
+libfaad-dev
+libflac-dev
+libftdi-dev
+libfuse-dev
+libgl1-mesa-dev
+libglade2-dev
+# libgnome2-dev - Replace with libgtk-3-dev
+libgtk-3-dev
+# libgnomeui-dev - Replace with libgtk-3-dev
+# libgnomevfs2-dev - Replace with libgio-dev (part of libglib2.0-dev)
+libglib2.0-dev
+libgtk2.0-dev
+libid3tag0-dev
+libiec61883-dev
+libimlib2-dev
+libirman-dev
+libjpeg-dev
+# libkonq5-dev - Replace with libkf5konq-dev
+libkf5konq-dev
+liblinphone-dev
+liblircclient-dev
+libmad0-dev
+libmediastreamer-dev
+libmodplug-dev
+libmp3lame-dev
+libmpcdec-dev
+libmysqlclient-dev
+libncursesw5-dev
+libpcre3-dev
+kdelibs5-dev
+libpostproc-dev
+libpulse-dev
+# libqt4-dev - Replace with qtbase5-dev
+qtbase5-dev
+libreadline-dev
+librpm-dev
+libsdl-gfx1.2-dev
+libsdl-image1.2-dev
+libsdl-ttf2.0-dev
+libsdl1.2-dev
+libsmbclient-dev
+libspeex-dev
+libsqlite3-dev
+libstdc++6
+libswscale-dev
+libtag1-dev
+libtheora-dev
+libtool
+libtwolame-dev
+libupnp-dev
+libusb-dev
+libvdpau-dev
+libvdpau1
+libvte-dev
+libwavpack-dev
+libx11-dev
+libxcb-shape0-dev
+libxcb-shm0-dev
+libxcb-xv0-dev
+libxext-dev
+libxine2-dev
+libxmu-headers
+libxrender-dev
+libxt-dev
+libxtst-dev
+libxv-dev
+libxvmc-dev
+libxxf86vm-dev
+libzvbi-dev
+module-assistant
+mysql-client
+mysql-server
+nasm
+patch
+po4a
+quilt
+ruby-dev
+sgmltools-lite
+sharutils
+squashfs-tools
+subversion
+swig
+tcl
+tcl-dev
+texi2html
+texinfo
+transfig
+txt2man
+uuid-dev
+vdr-dev
+w3m
+x11proto-core-dev
+x11proto-xext-dev
+xorg-dev
+libfftw3-dev 
+libxvidcore4 
+libxvidcore-dev
+libfftw3-dev 
+xmlto
+doxygen 
+gcc-multilib 
+python3-dev
+yasm
+libfribidi-dev 
+liba52-0.7.4-dev 
+libcdaudio-dev  
+libvisual-0.4-dev
+libmng-dev
+libtalloc-dev
+chrpath
+libxml++2.6-dev
+libao-dev
+libssl-dev
+# libcrystalhd-dev - Check if available or needed
+libvorbis-dev
+libva-dev
+libclass-dbi-perl
+libnet-upnp-perl
+# python3-oauth - Replace with python3-oauthlib
+python3-oauthlib
+python3-lxml
+# python3-mysqldb is actually available in Jammy
+python3-mysqldb
+# python3-urlgrabber - Replace with python3-requests
+python3-requests
+# fftw-dev - Appears to be duplicate of libfftw3-dev
+libexif-dev
+libdate-manip-perl
+libxml-simple-perl
+libimage-size-perl
+libdatetime-format-iso8601-perl
+libsoap-lite-perl
+libx264-dev
+libvpx-dev
+libavahi-compat-libdnssd-dev
+libcdio-cdda-dev
+libcdio-paranoia-dev
+libass-dev
+libcec-dev
+# libcec-platform-dev - Check for replacement or build from source
+libxml-xpath-perl
+dh-autoreconf
+libpq-dev
+libv4l-dev
+rsync
+portaudio19-dev
+python3-setuptools
+dh-exec
+bash-completion
+bison
+flex
+libcppunit-dev
+protobuf-compiler
+python3-protobuf
+libprotoc-dev
+linux-source
+linux-headers-generic
+# libqjson-dev - Use Qt5's JSON support
+libow-dev
+libvlc-dev
+libjsoncpp-dev
+libsdl2-dev
+libsdl2-gfx-dev
+libsdl2-image-dev
+libsdl2-mixer-dev
+libsdl2-net-dev
+libsdl2-ttf-dev
+# qt5-default - Replaced by qtbase5-dev
+qtbase5-dev
+qtdeclarative5-dev
+qtmultimedia5-dev
+qtscript5-dev
+libplist-dev
+indent
+fastjar
+libola-dev
+libgdbm-dev
+libgoogle-perftools-dev
+# dh-systemd - Now part of debhelper
+libsystemd-dev
+# libcec-platform-dev - Duplicate entry
+libbluray-dev 
+freeglut3-dev
+libxcb-dpms0-dev libxcb-screensaver0-dev libxcb-image0-dev libxcb-util-dev libxcb-icccm4-dev libxcb-keysyms1-dev libxcb-ewmh-dev

@@ -1,0 +1,154 @@
+Suggested replacements for missing packages in Ubuntu Jammy:
+===========================================================
+
+Looking for replacements for: libdancer-xml0-dev
+  Base name search: dancer-xml
+  Similar packages available:
+
+----------------------------------------
+
+Looking for replacements for: libesd0-dev
+  Base name search: esd
+  Similar packages available:
+libpulse-dev - PulseAudio client development headers and libraries
+erlang-esdl-dev - Erlang bindings to the SDL (development files)
+golang-github-hodgesds-perf-utils-dev - Perf Utilities for Go (library)
+kdesdk - Software Development Kit from the official KDE release
+kdesdk-scripts - scripts and data files for development
+libignition-msgs-dev - Set of message definitions used by robotics apps - Dev files
+libignition-msgs5-dev - Set of message definitions used by robotics apps v5 - Dev files
+liblimesuite-dev - library to access LMS7 transceiver based hardware (development)
+liblimesuite-doc - liblimesuite development documentation
+libpulse-ocaml-dev - OCaml interface to the pulseaudio library
+
+----------------------------------------
+
+Looking for replacements for: libgnome2-dev
+  Base name search: gnome
+  Similar packages available:
+gedit-dev - official text editor of the GNOME desktop environment (development files)
+gnome-control-center-dev - utilities to configure the GNOME desktop
+gnome-settings-daemon-dev - Headers for building applications communicating with gnome-settings-daemon
+gnome-video-effects-dev - Development files for gnome-video-effects
+libao-dev - Cross Platform Audio Output Library Development
+libfwupd-dev - development files for libfwupd
+libfwupdplugin-dev - development files for libfwupdplugin
+libgail-3-dev - GNOME Accessibility Implementation Library -- development files
+libgdm-dev - GNOME Display Manager (development files)
+libgexiv2-dev - GObject-based wrapper around the Exiv2 library - development files
+  Potential GNOME/GTK replacements:
+libgtk-3-dev - development files for the GTK library
+librust-gtk-sys-dev - FFI bindings to libgtk-3 - Rust source code
+librust-pangocairo-sys-dev - FFI bindings to libgtk-3 - Rust source code
+libgtk-4-dev - development files for the GTK library
+
+----------------------------------------
+
+Looking for replacements for: libgnomeui-dev
+  Base name search: gnomeui
+  Similar packages available:
+  Potential GNOME/GTK replacements:
+libgtk-3-dev - development files for the GTK library
+librust-gtk-sys-dev - FFI bindings to libgtk-3 - Rust source code
+librust-pangocairo-sys-dev - FFI bindings to libgtk-3 - Rust source code
+libgtk-4-dev - development files for the GTK library
+
+----------------------------------------
+
+Looking for replacements for: libgnomevfs2-dev
+  Base name search: gnomevfs
+  Similar packages available:
+libghc-gio-dev - binding to the GIO
+  Potential GNOME/GTK replacements:
+libgtk-3-dev - development files for the GTK library
+librust-gtk-sys-dev - FFI bindings to libgtk-3 - Rust source code
+librust-pangocairo-sys-dev - FFI bindings to libgtk-3 - Rust source code
+libgtk-4-dev - development files for the GTK library
+
+----------------------------------------
+
+Looking for replacements for: libkonq5-dev
+  Base name search: konq
+  Similar packages available:
+libkf5konq-dev - development files for the Konqueror libraries
+
+----------------------------------------
+
+Looking for replacements for: libqt4-dev
+  Base name search: qt
+  Similar packages available:
+libgpgmepp-doc - C++ and Qt bindings for GPGME (documentation for developers)
+python3-pyudev - Python3 bindings for libudev
+fcitx-libs-dev - Flexible Input Method Framework - library development files
+fcitx5-module-cloudpinyin-dev - Development files for fcitx5 cloudpinyin module
+fcitx5-module-lua-dev - Lua support for fcitx5 (development files)
+fcitx5-module-pinyinhelper-dev - Development files for fcitx5 pinyinhelper module
+fcitx5-module-punctuation-dev - Development files for fcitx5 punctuation module
+fcitx5-modules-dev - Fcitx Input Method Framework v5 (input modules dev files)
+gambas3 - Complete visual development environment for Gambas
+gammaray-dev - GammaRay plugin development files
+  Potential Qt5/Qt6 replacements:
+libaccounts-qt5-dev - Accounts database access Qt version - Qt5 development files
+libcgal-dev - C++ library for computational geometry (development files)
+libcgal-qt5-dev - C++ library for computational geometry (development files, support for Qt5)
+libdbusextended-qt5-dev - Extended DBus interface for Qt (development files)
+libdbusmenu-qt5-dev - Qt implementation of the DBusMenu protocol (development)
+qcoro-qt6-dev - C++20 coroutines for Qt6 - development
+qt6-3d-dev - Qt 6 3D - development files
+qt6-base-dev - Qt 6 base development files
+qt6-base-dev-tools - Qt 6 base development programs
+qt6-base-private-dev - Qt 6 base private development files
+
+----------------------------------------
+
+Looking for replacements for: python3-oauth
+  Base name search: python3-oauth
+  Similar packages available:
+  Potential Python replacement packages:
+python3-oauthlib - generic, spec-compliant implementation of OAuth for Python3
+python3-oauth2client - OAuth 2.0 client library - Python 3.x
+python3-oauthlib - generic, spec-compliant implementation of OAuth for Python3
+python3-discogs-client - Python module to access the Discogs API
+python3-django-oauth-toolkit - OAuth2 capabilities for Django projects (Python3 version)
+python3-google-auth-oauthlib - oauthlib integration with google-auth
+python3-gpsoauth - Client library for Google Play Services OAuth
+python3-mwoauth - Generic MediaWiki OAuth handshake helper.
+python3-oauth2client - OAuth 2.0 client library - Python 3.x
+python3-requests-oauthlib - module providing OAuthlib auth support for requests (Python 3)
+python3-typeshed - collection of library stubs for Python, with static types
+
+----------------------------------------
+
+Looking for replacements for: python3-urlgrabber
+  Base name search: python3-urlgrabber
+  Similar packages available:
+  Potential Python replacement packages:
+
+----------------------------------------
+
+Looking for replacements for: libqjson-dev
+  Base name search: qjson
+  Similar packages available:
+
+----------------------------------------
+
+Looking for replacements for: libcec-platform-dev
+  Base name search: cec-platform
+  Similar packages available:
+
+----------------------------------------
+
+Looking for replacements for: dh-systemd
+  Base name search: dh-systemd
+  Similar packages available:
+  Note: dh-systemd functionality is now part of debhelper (>= 9.20160709)
+Version: 13.6ubuntu1
+
+----------------------------------------
+
+Looking for replacements for: libcec-platform-dev
+  Base name search: cec-platform
+  Similar packages available:
+
+----------------------------------------
+

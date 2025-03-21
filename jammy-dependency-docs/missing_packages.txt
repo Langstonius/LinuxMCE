@@ -1,0 +1,14 @@
+Packages missing in Ubuntu Jammy:
+libdancer-xml0-dev
+libesd0-dev
+libgnome2-dev
+libgnomeui-dev
+libgnomevfs2-dev
+libkonq5-dev
+libqt4-dev
+python3-oauth
+python3-urlgrabber
+libqjson-dev
+libcec-platform-dev
+dh-systemd
+libcec-platform-dev
