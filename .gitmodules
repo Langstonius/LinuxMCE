@@ -2,3 +2,6 @@
 	path = external/logitechmediaserver-deb
 	url = https://github.com/Langstonius/logitechmediaserver-deb.git
 	branch = public/7.9
+[submodule "Ubuntu_Helpers_NoHardCode"]
+	path = Ubuntu_Helpers_NoHardCode
+	url = https://github.com/Langstonius/Ubuntu_Helpers_NoHardCode.git
