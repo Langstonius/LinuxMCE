@@ -27,6 +27,10 @@ We've identified 13 packages that need replacement or removal from the original 
 - `orbiter_dependencies.md` - Analysis of Orbiter component dependencies
 - `orbitergen_dependencies.md` - Analysis of OrbiterGen component dependencies
 - `generic_serial_device_dependencies.md` - Analysis of serial device dependencies
+- `avwizard_dependencies.md` - Analysis of AVWizard component dependencies
+- `plutoutils_dependencies.md` - Analysis of PlutoUtils component dependencies
+- `serializeclass_dependencies.md` - Analysis of SerializeClass component dependencies
+- `build_scripts_documentation.md` - Detailed documentation of build scripts in Ubuntu_Helpers_NoHardcode
 
 ### Scripts
 
