@@ -20,11 +20,20 @@ We've identified 13 packages that need replacement or removal from the original 
 - `package_migration.md` - Table of missing packages with recommended replacements
 - `updated_build_packages` - Updated build-packages file with replacements and comments
 - `dependency_status.md` - Executive summary with statistics and next steps
+- `comprehensive_migration_guide.md` - Complete guide for migration process
+- `dependency_migration_plan.md` - Strategic plan for dependency transition
+- `dcerouter_dependencies.md` - Analysis of DCERouter component dependencies
+- `lmce_launch_manager_dependencies.md` - Analysis of Launch Manager dependencies
+- `orbiter_dependencies.md` - Analysis of Orbiter component dependencies
+- `orbitergen_dependencies.md` - Analysis of OrbiterGen component dependencies
+- `generic_serial_device_dependencies.md` - Analysis of serial device dependencies
 
 ### Scripts
 
 - `check_packages.sh` - Identifies which packages are missing in Jammy
 - `find_replacements.sh` - Searches for potential replacement packages
+- `find_dependency_usage.sh` - Analyzes how missing packages are used in the codebase
+- `identify_replacements.sh` - Helps identify appropriate replacement packages
 - `verify_check.sh` - Validates package coverage statistics
 - `final_validation.sh` - Ensures all missing packages are properly documented
 
