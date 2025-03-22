@@ -1,0 +1,13 @@
+Results for libesd0-dev
+=================================================
+CMake dependencies:
+
+Makefile dependencies:
+
+Debian package dependencies:
+
+Configure/Autoconf dependencies:
+
+Possible header includes:
+
+Total references found: 4

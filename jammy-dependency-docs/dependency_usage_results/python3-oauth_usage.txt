@@ -1,0 +1,13 @@
+Results for python3-oauth
+=================================================
+CMake dependencies:
+
+Makefile dependencies:
+
+Debian package dependencies:
+
+Configure/Autoconf dependencies:
+
+Python module imports:
+
+Total references found: 4

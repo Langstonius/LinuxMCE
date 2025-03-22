@@ -1,0 +1,15 @@
+Results for libgnome2-dev
+=================================================
+CMake dependencies:
+
+Makefile dependencies:
+
+Debian package dependencies:
+
+Configure/Autoconf dependencies:
+
+Possible header includes:
+../src/DuskySkyController/libsky-control/sky-control.c:#include "gnome.h"
+../src/DuskySkyController/libsky-control/gnome.c:#include "gnome.h"
+
+Total references found: 6

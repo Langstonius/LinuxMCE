@@ -1,0 +1,16 @@
+Results for libqjson-dev
+=================================================
+CMake dependencies:
+
+Makefile dependencies:
+
+Debian package dependencies:
+
+Configure/Autoconf dependencies:
+
+Possible header includes:
+../src/Linuxmce_NVR/managerClasses/eventlistener.cpp:#include "qjsondocument.h"
+../src/Linuxmce_NVR/managerClasses/eventlistener.cpp:#include "qjsonarray.h"
+../src/autotagger/films.cpp:#include <qjson/parser.h>
+
+Total references found: 7

@@ -1,0 +1,154 @@
+Results for libqt4-dev
+=================================================
+CMake dependencies:
+
+Makefile dependencies:
+
+Debian package dependencies:
+
+Configure/Autoconf dependencies:
+
+Possible header includes:
+../src/QML_Light_Switch/Light_Switch/qtlightswitch.cpp:#include "qtlightswitch.h"
+../src/QML_Light_Switch/Light_Switch/switchmanager.h:#include <qtlightswitch.h>
+../src/QML_Light_Switch/Light_Switch/qmlapplicationviewer/qmlapplicationviewer.cpp:#include <qt_private/qdeclarativedebughelper_p.h>
+../src/Linuxmce_NVR/managerClasses/eventlistener.h:#include "qtcpserver.h"
+../src/Linuxmce_NVR/Linuxmce_NVR.cpp:#include "qthread.h"
+../src/Linuxmce_NVR/cameraClasses/abstractpicamera.cpp:#include "qtimer.h"
+../src/Linuxmce_NVR/cameraClasses/motionpicamera.cpp:#include "qthread.h"
+../src/autotagger/autotagger.h:#include <qtextstream.h>
+../src/qOrbiter/qOrbiter_src/qtquick2applicationviewer/qtquick2applicationviewer.cpp:#include "qtquick2applicationviewer.h"
+../src/qOrbiter/qOrbiter_src/plugins/DceScreenSaver/dcescreensaver.cpp:#include <qtimer.h>
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#include <qt_private/qdeclarativedebughelper_p.h>
+../src/qOrbiter/qOrbiter_src/orbiterwindow.h:#include <qtquick2applicationviewer/qtquick2applicationviewer.h>
+../src/qOrbiter/qOrbiter_src/qt5droid/Qt5Android/qtquick2applicationviewer/qtquick2applicationviewer.cpp:#include "qtquick2applicationviewer.h"
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#include <qt_private/qdeclarativedebughelper_p.h>
+../src/qOrbiter/qOrbiter_src/qorbitermanager.h:#include "qthread.h"
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#include <qt_private/qdeclarativedebughelper_p.h>
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp:#include <qt_private/qdeclarativedebughelper_p.h>
+../src/qMediaPlayer_Plugin/qtMediaPlayerPlugin/qtmediaplayerplugin.h:#include "qtMediaPlayerPlugin_global.h"
+../src/qMediaPlayer_Plugin/qtMediaPlayerPlugin/qtmediaplayerplugin.cpp:#include "qtmediaplayerplugin.h"
+
+Qt4 usage:
+../src/DLNA/LMCERenderer.cpp:#include <QtCore/QUrl>
+../src/DLNA/LMCERenderer.cpp:#include <QtCore/QTime>
+../src/DLNA/LMCERenderer.cpp:#include <QtCore/QSet>
+../src/DLNA/LMCERenderer.cpp:#include <QtCore/QHashNode>
+../src/DLNA/DLNAEngine.h:#include <QtCore/QCoreApplication>
+../src/DLNA/Main.cpp:#include <QtCore/QCoreApplication>
+../src/DLNA/LMCERenderer.h:#include <QtCore/QUrl>
+../src/DLNA/LMCERenderer.h:#include <QtCore/QTime>
+../src/DLNA/DLNA.h:#include <QtCore/QCoreApplication>
+../src/DLNA/DLNAEngine.cpp:#include <QtCore/QDir>
+../src/DLNA/DLNAEngine.cpp:#include <QtCore/QList>
+../src/QML_Light_Switch/Light_Switch/main.cpp:#include <QtGui/QApplication>
+../src/QML_Light_Switch/Light_Switch/qmlapplicationviewer/qmlapplicationviewer.cpp:#include <QtCore/QCoreApplication>
+../src/QML_Light_Switch/Light_Switch/qmlapplicationviewer/qmlapplicationviewer.cpp:#include <QtCore/QDir>
+../src/QML_Light_Switch/Light_Switch/qmlapplicationviewer/qmlapplicationviewer.cpp:#include <QtCore/QFileInfo>
+../src/QML_Light_Switch/Light_Switch/qmlapplicationviewer/qmlapplicationviewer.cpp:#if QT_VERSION < 0x040702
+../src/QML_Light_Switch/Light_Switch/qmlapplicationviewer/qmlapplicationviewer.cpp:#else // QT_VERSION < 0x040702
+../src/QML_Light_Switch/Light_Switch/qmlapplicationviewer/qmlapplicationviewer.cpp:#endif // QT_VERSION < 0x040702
+../src/Cloud_Interface/googlApiInterface/googlapiinterface_global.h:#include <QtCore/qglobal.h>
+../src/SerializeClass/SerializeClass.cpp:#ifdef QT_VERSION
+../src/SerializeClass/SerializeClass.cpp:#if QT_VERSION <= 0x050000
+../src/autotagger/autotagger.h:#include <QtCore/QCoreApplication>
+../src/DCE_Browser/lmceBrowser/lmceBrowser/main.cpp:#include <QtGui/QApplication>
+../src/DCE_Browser/lmceBrowser/lmceBrowser/browserwindow.h:#include <QtGui/QMainWindow>
+../src/qOrbiter/qOrbiter_src/qtquick2applicationviewer/qtquick2applicationviewer.cpp:#include <QtCore/QCoreApplication>
+../src/qOrbiter/qOrbiter_src/qtquick2applicationviewer/qtquick2applicationviewer.cpp:#include <QtCore/QDir>
+../src/qOrbiter/qOrbiter_src/main.cpp:#include <QtGui/QApplication>
+../src/qOrbiter/qOrbiter_src/main.cpp:#include <QtCore/QtPlugin>
+../src/qOrbiter/qOrbiter_src/main.cpp:#include <QtCore/QThread>
+../src/qOrbiter/qOrbiter_src/main.cpp:#if(QT_VERSION >= 0x040800)
+../src/qOrbiter/qOrbiter_src/qorbitermanager.cpp:#include <QtCore/QFile>
+../src/qOrbiter/qOrbiter_src/qorbitermanager.cpp:#include <QtCore/QTimer>
+../src/qOrbiter/qOrbiter_src/qorbitermanager.cpp:#include <QtCore/QProcess>
+../src/qOrbiter/qOrbiter_src/qorbitermanager.cpp:#if QT_VERSION >= QT_VERSION_CHECK(5,2,0)
+../src/qOrbiter/qOrbiter_src/imageProviders/gridimageprovider.h:#include <QtCore/QObject>
+../src/qOrbiter/qOrbiter_src/imageProviders/gridimageprovider.h:#include <QtCore/QModelIndex>
+../src/qOrbiter/qOrbiter_src/imageProviders/gridimageprovider.h:#include <QtGui/QImage>
+../src/qOrbiter/qOrbiter_src/imageProviders/basicImageProvider.h:#include <QtCore/QObject>
+../src/qOrbiter/qOrbiter_src/imageProviders/basicImageProvider.h:#include <QtCore/QDebug>
+../src/qOrbiter/qOrbiter_src/imageProviders/basicImageProvider.h:#include <QtCore/QVariant>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/playerInterfaces/OmxDbusProxy.h:#include <QtCore/QObject>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/playerInterfaces/OmxDbusProxy.h:#include <QtCore/QByteArray>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/playerInterfaces/OmxDbusProxy.h:#include <QtCore/QList>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/playerInterfaces/OmxDbusProxy.h:#include <QtCore/QMap>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/playerInterfaces/OmxDbusProxy.h:#include <QtCore/QString>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/playerInterfaces/OmxDbusProxy.h:#include <QtCore/QStringList>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/playerInterfaces/OmxDbusProxy.h:#include <QtCore/QVariant>
+../src/qOrbiter/qOrbiter_src/plugins/AudioVisual/audiovisual_plugin.cpp:#if QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/plugins/DceScreenSaver/dcescreensaver_plugin.cpp:#if QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/androidsystem.cpp:/** @defgroup Qt4JNIvariables Qt4 JNI methods and variables
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/androidsystem.cpp: *  Note that the Qt4 build uses necessitas and a more hands on method for accessing the JNI.
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/androidsystem.cpp: *  Note that the Qt4 build uses necessitas and a more hands on method for accessing the JNI.
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#if QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#if QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#else // QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#endif // QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#else // QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/plugins/AndroidInfo/qmlapplicationviewer/qmlapplicationviewer.cpp:#endif // QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/orbiterwindow.cpp:#include <QtCore/QObject>
+../src/qOrbiter/qOrbiter_src/orbiterwindow.cpp:#include <QtCore/QDir>
+../src/qOrbiter/qOrbiter_src/modeltest/tst_modeltest.cpp:#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+../src/qOrbiter/qOrbiter_src/modeltest/tst_modeltest.cpp:#include <QtGui/QtGui>
+../src/qOrbiter/qOrbiter_src/modeltest/modeltest.h:#include <QtCore/QObject>
+../src/qOrbiter/qOrbiter_src/modeltest/modeltest.h:#include <QtCore/QAbstractItemModel>
+../src/qOrbiter/qOrbiter_src/modeltest/modeltest.h:#include <QtCore/QStack>
+../src/qOrbiter/qOrbiter_src/modeltest/modeltest.cpp:#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+../src/qOrbiter/qOrbiter_src/modeltest/modeltest.cpp:#include <QtGui/QtGui>
+../src/qOrbiter/qOrbiter_src/modeltest/dynamictreemodel.h:#include <QtCore/QAbstractItemModel>
+../src/qOrbiter/qOrbiter_src/modeltest/dynamictreemodel.h:#include <QtCore/QHash>
+../src/qOrbiter/qOrbiter_src/modeltest/dynamictreemodel.h:#include <QtCore/QList>
+../src/qOrbiter/qOrbiter_src/modeltest/dynamictreemodel.cpp:#include <QtCore/QHash>
+../src/qOrbiter/qOrbiter_src/modeltest/dynamictreemodel.cpp:#include <QtCore/QList>
+../src/qOrbiter/qOrbiter_src/modeltest/dynamictreemodel.cpp:#include <QtCore/QTimer>
+../src/qOrbiter/qOrbiter_src/datamodels/skindatamodel.cpp:#include <QtCore/QUrl>
+../src/qOrbiter/qOrbiter_src/contextobjects/screeninfo.cpp:#include "QtGui/qguiapplication.h"
+../src/qOrbiter/qOrbiter_src/contextobjects/nowplayingclass.h:#include <QtGui/QImage>
+../src/qOrbiter/qOrbiter_src/contextobjects/nowplayingclass.h:#include <QtCore/QTime>
+../src/qOrbiter/qOrbiter_src/contextobjects/nowplayingclass.h:#include <QtCore/QDebug>
+../src/qOrbiter/qOrbiter_src/contextobjects/floorplandevice.cpp:#include "QtGui/qguiapplication.h"
+../src/qOrbiter/qOrbiter_src/shaders/trace.h:#include <QtCore/QDebug>
+../src/qOrbiter/qOrbiter_src/shaders/filereader.cpp:#include <QtCore/QCoreApplication>
+../src/qOrbiter/qOrbiter_src/shaders/filereader.cpp:#include <QtCore/QFile>
+../src/qOrbiter/qOrbiter_src/shaders/filereader.cpp:#include <QtCore/QFileInfo>
+../src/qOrbiter/qOrbiter_src/shaders/filereader.cpp:#include <QtCore/QTextStream>
+../src/qOrbiter/qOrbiter_src/shaders/filereader.h:#include <QtCore/QObject>
+../src/qOrbiter/qOrbiter_src/qt5droid/Qt5Android/qtquick2applicationviewer/qtquick2applicationviewer.cpp:#include <QtCore/QCoreApplication>
+../src/qOrbiter/qOrbiter_src/qt5droid/Qt5Android/qtquick2applicationviewer/qtquick2applicationviewer.cpp:#include <QtCore/QDir>
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/QtMediaCallbacks/QtMediaCallbacks_global.h:#include <QtCore/qglobal.h>
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#if QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#if QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#else // QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#endif // QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#else // QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/necessitas/Qorbiter-necessitas/qmlapplicationviewer/qmlapplicationviewer.cpp:#endif // QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/qorbitermanager.h:#include <QtGui/QWidget>
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#if QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#if QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#else // QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#endif // QT_VERSION < 0x040702
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#else // QT_VERSION < 0x050000
+../src/qOrbiter/qOrbiter_src/qmlapplicationviewer/qmlapplicationviewer.cpp:#endif // QT_VERSION < 0x050000
+../src/qOrbiter/platforms/Android/QmlVlc/QmlVlc/SGVlcVideoNode.cpp:#include <QtGui/QOpenGLFunctions>
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp:#include <QtCore/QCoreApplication>
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp:#include <QtCore/QDir>
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp:#include <QtCore/QFileInfo>
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp:#if defined(QMLJSDEBUGGER) && QT_VERSION < 0x040800
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp://#if QT_VERSION < 0x040702
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp://#else // QT_VERSION < 0x040702
+../src/qOrbiter/platforms/iOS/qOrbiter/qmlapplicationviewer.cpp://#endif // QT_VERSION < 0x040702
+../src/YouTube_Player/QtYoutube/youtubewindow.h:#include <QtGui>
+../src/qMediaPlayer_Plugin/qtMediaPlayerPlugin/qtMediaPlayerPlugin_global.h:#include <QtCore/qglobal.h>
+../src/Hue_Controller/HueController/main.cpp:#include <QtCore/QCoreApplication>
+../src/Hue_Controller/HueController.cpp:#include <QtGui/QColor>
+
+Total references found: 144

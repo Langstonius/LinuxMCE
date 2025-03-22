@@ -1,0 +1,13 @@
+libdancer-xml0-dev: 4 references
+libesd0-dev: 4 references
+libgnome2-dev: 6 references
+libgnomeui-dev: 16 references
+libgnomevfs2-dev: 4 references
+libkonq5-dev: 4 references
+libqt4-dev: 144 references
+python3-oauth: 4 references
+python3-urlgrabber: 4 references
+libqjson-dev: 7 references
+libcec-platform-dev: 4 references
+dh-systemd: 3 references
+libcec-platform-dev: 4 references

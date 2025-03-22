@@ -1,0 +1,25 @@
+Results for libgnomeui-dev
+=================================================
+CMake dependencies:
+
+Makefile dependencies:
+../src/mce-launcher/Makefile:PACKAGE_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/libgnome-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/orbit-2.0 -I/usr/include/libbonobo-2.0 -I/usr/include/gconf/2 -I/usr/include/gnome-vfs-2.0 -I/usr/lib/gnome-vfs-2.0/include -I/usr/include/bonobo-activation-2.0 -I/usr/include/libgnomeui-2.0 -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libart-2.0 -I/usr/include/libbonoboui-2.0 -I/usr/include/gnome-keyring-1 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/libxml2 -I/usr/include/libglade-2.0  
+../src/mce-launcher/src/Makefile:PACKAGE_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/libgnome-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/orbit-2.0 -I/usr/include/libbonobo-2.0 -I/usr/include/gconf/2 -I/usr/include/gnome-vfs-2.0 -I/usr/lib/gnome-vfs-2.0/include -I/usr/include/bonobo-activation-2.0 -I/usr/include/libgnomeui-2.0 -I/usr/include/libgnomecanvas-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libart-2.0 -I/usr/include/libbonoboui-2.0 -I/usr/include/gnome-keyring-1 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/libxml2 -I/usr/include/libglade-2.0  
+
+Debian package dependencies:
+
+Configure/Autoconf dependencies:
+../src/mce-launcher/configure:    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0\"") >&5
+../src/mce-launcher/configure:  ($PKG_CONFIG --exists --print-errors "libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0") 2>&5
+../src/mce-launcher/configure:  pkg_cv_PACKAGE_CFLAGS=`$PKG_CONFIG --cflags "libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0" 2>/dev/null`
+../src/mce-launcher/configure:    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0\"") >&5
+../src/mce-launcher/configure:  ($PKG_CONFIG --exists --print-errors "libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0") 2>&5
+../src/mce-launcher/configure:  pkg_cv_PACKAGE_LIBS=`$PKG_CONFIG --libs "libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0" 2>/dev/null`
+../src/mce-launcher/configure:	        PACKAGE_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0"`
+../src/mce-launcher/configure:	        PACKAGE_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0"`
+../src/mce-launcher/configure:	{ { echo "$as_me:$LINENO: error: Package requirements (libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0) were not met:
+../src/mce-launcher/configure:echo "$as_me: error: Package requirements (libgnome-2.0 libgnomeui-2.0 libglade-2.0 vte gthread-2.0) were not met:
+
+Possible header includes:
+
+Total references found: 16
