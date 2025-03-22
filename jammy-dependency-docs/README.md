@@ -31,6 +31,7 @@ We've identified 13 packages that need replacement or removal from the original 
 - `plutoutils_dependencies.md` - Analysis of PlutoUtils component dependencies
 - `serializeclass_dependencies.md` - Analysis of SerializeClass component dependencies
 - `build_scripts_documentation.md` - Detailed documentation of build scripts in Ubuntu_Helpers_NoHardcode
+- `build_modernization_proposal.md` - Proposal for modernizing the build system
 
 ### Scripts
 
