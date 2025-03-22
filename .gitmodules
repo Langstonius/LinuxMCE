@@ -3,5 +3,5 @@
 	url = https://github.com/Langstonius/logitechmediaserver-deb.git
 	branch = public/7.9
 [submodule "Ubuntu_Helpers_NoHardCode"]
-	path = src/Ubuntu_Helpers_NoHardCode
-	url = https://github.com/Langstonius/Ubuntu_Helpers_NoHardCode.git
+	path = src/Ubuntu_Helpers_NoHardcode
+	url = https://github.com/Langstonius/Ubuntu_Helpers_NoHardcode.git
